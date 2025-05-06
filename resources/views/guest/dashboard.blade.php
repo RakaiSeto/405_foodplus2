@@ -80,7 +80,7 @@
           ['nama' => 'Point Coffee', 'tags' => ['Minuman', 'Aneka Ragam', 'Murah'], 'views' => '333,956', 'likes' => '24,753', 'comments' => '203'],
           ['nama' => 'J.CO', 'tags' => ['Donat', 'Manis & Asin', 'Makanan'], 'views' => '357,845', 'likes' => '24,753', 'comments' => '195'],
         ];
-        
+
         // Bagi data menjadi 3 kolom
         $chunk = ceil(count($restoranData) / 3);
         $column1 = array_slice($restoranData, 0, $chunk);

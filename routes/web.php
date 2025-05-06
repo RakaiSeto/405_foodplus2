@@ -146,5 +146,3 @@ Route::get('/guest/manajemendonasi', function () {
     $donations = \App\Models\Donation::all();
     return view('guest.manajemendonasi', ['donations' => $donations]);
 })->name('guest.manajemendonasi');
-
-Route::get('/donasi', [DonasiController::class, 'create'])->name('donasi.create');
