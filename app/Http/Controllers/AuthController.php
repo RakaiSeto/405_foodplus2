@@ -49,8 +49,7 @@ class AuthController extends Controller
             "message" => "Login success",
             "data" => [
                 "accessToken" => $token->plainTextToken
-            ]
-            ]);
+            ]]);
 
     }
 
@@ -69,7 +68,7 @@ class AuthController extends Controller
             // Hapus semua token jika menggunakan TransientToken
             $request->user()->tokens()->delete();
         }
-        
+
         return response()->json([
             "status" => "success",
             "message" => "Logout successfully"
