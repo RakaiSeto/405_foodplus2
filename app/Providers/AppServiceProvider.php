@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Providers;
+
+use App\Models\Donation;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        //
+        Gate::define("insert-donation", function (User $user){
+            return $user->role === "penyedia";
+        });
+
+        Gate::define("update-donation", function (User $user, Donation $donation) {
+            return $user->role === "penyedia" && $user->id === $donation->user_id;
+        });
+    }
+}
