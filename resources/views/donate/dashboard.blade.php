@@ -283,7 +283,6 @@
     @if(session("accessToken"))
         <script>
             localStorage.setItem("accessToken", "{{session("accessToken")}}")
-            console.log(localStorage.getItem("accessToken"));
         </script>
     @endif
 

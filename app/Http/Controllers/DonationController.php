@@ -20,7 +20,7 @@ class DonationController extends Controller implements HasMiddleware
     }
 
     public function index() {
-        $donations = Donation::all();
+        $donations = Donation::with("user")->get();
 
         return response()->json([
             "status" => "Success",
