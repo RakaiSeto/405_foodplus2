@@ -280,14 +280,22 @@
             </div>
         </div>
     </div>
+    @if(session("accessToken"))
+        <script>
+            localStorage.setItem("accessToken", "{{session("accessToken")}}")
+            console.log(localStorage.getItem("accessToken"));
+        </script>
+    @endif
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        fetch('/api/donations')
+        fetch('/api/donations/resto/all', {headers: {
+            "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+        }})
             .then(response => response.json())
-            .then(({data}) => {
+            .then(({data, status, message}) => {
                 const tbody = document.getElementById('donation-table-body');
-                tbody.innerHTML = ''; // kosongkan isi awalnya
+                tbody.innerHTML = '';
 
                 if (data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="7" class="text-center">Belum ada donasi</td></tr>';

@@ -91,7 +91,10 @@
       <!-- Grid layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- Kolom 1 -->
-        <div class="space-y-4">
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        {{-- <div class="space-y-4">
           @foreach ($column1 as $resto)
             <div class="bg-[#4E9A9A] p-4 rounded text-white flex items-start space-x-4">
               <img src="{{ asset('images/restaurant-logo.png') }}" onerror="this.src='https://via.placeholder.com/50'" class="w-12 h-12 rounded" />
@@ -106,10 +109,10 @@
               </div>
             </div>
           @endforeach
-        </div>
+        </div> --}}
 
         <!-- Kolom 2 -->
-        <div class="space-y-4">
+        {{-- <div class="space-y-4">
           @foreach ($column2 as $resto)
             <div class="bg-[#4E9A9A] p-4 rounded text-white flex items-start space-x-4">
               <img src="{{ asset('images/restaurant-logo.png') }}" onerror="this.src='https://via.placeholder.com/50'" class="w-12 h-12 rounded" />
@@ -124,10 +127,10 @@
               </div>
             </div>
           @endforeach
-        </div>
+        </div> --}}
 
         <!-- Kolom 3 -->
-        <div class="space-y-4">
+        {{-- <div class="space-y-4">
           @foreach ($column3 as $resto)
             <div class="bg-[#4E9A9A] p-4 rounded text-white flex items-start space-x-4">
               <img src="{{ asset('images/restaurant-logo.png') }}" onerror="this.src='https://via.placeholder.com/50'" class="w-12 h-12 rounded" />
@@ -142,9 +145,15 @@
               </div>
             </div>
           @endforeach
-        </div>
+        </div> --}}
       </div>
     </div>
   </div>
+
+  <script>
+    const donations =fetch("http://localhost:8000/api/donations", {method: "GET"}).then(value => value.json()).then(data => {
+        console.log({data});
+    })
+  </script>
 </body>
 </html>

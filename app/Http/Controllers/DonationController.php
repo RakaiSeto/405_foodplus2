@@ -29,6 +29,16 @@ class DonationController extends Controller implements HasMiddleware
         ]);
     }
 
+    public function getDonationsByResto(Request $request) {
+        $donations = Donation::where("user_id", $request->user()->id)->get();
+
+        return response()->json([
+        "status" => "Success",
+        "message" => "Donations from this restaurant retrieved",
+        "data" => $donations
+    ]);
+    }
+
     public function store(Request $request) {
         $validatedData = $request->validate([
             "food_name" => "string|required",

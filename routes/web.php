@@ -75,9 +75,9 @@ Route::post('/login', function (Request $request) {
 
                 // Redirect berdasarkan role
                 if ($user->role === 'penyedia') {
-                    return redirect()->route('dashboard.donate');
+                    return redirect()->route('dashboard.donate')->with("accessToken", $token);
                 } else {
-                    return redirect()->route('dashboard.receive');
+                    return redirect()->route('dashboard.receive')->with ("accessToken", $token);
                 }
             }
         }
