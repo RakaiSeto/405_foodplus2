@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Donatur - FOOD+</title>
+  <title>Dashboard Penerima - FOOD+</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -139,7 +139,7 @@
       <div style="position: relative;">
         <button onclick="toggleDropdown()" style="background-color: white; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
           <span style="margin-right: 5px;">🔔</span>
-          <span>{{ Auth::user()->name ?? 'donatur' }} ▼</span>
+          <span>{{ Auth::user()->name ?? 'penerima' }} ▼</span>
         </button>
         <div id="userDropdown" style="display: none; position: absolute; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10;">
           <a href="#" style="display: block; padding: 10px 20px; text-decoration: none; color: #0f172a;">Profile</a>
@@ -151,44 +151,66 @@
       </div>
     </div>
 
+    @php
+      // Mengambil data statistik dari database
+      $totalDonatur = \App\Models\User::where('role', 'penyedia')->count();
+      $totalRestoran = \App\Models\User::where('role', 'penyedia')->count();
+      $totalPenerima = \App\Models\User::where('role', 'penerima')->count();
+      $totalMakananTersedia = \App\Models\Donation::where('status', 'available')->count();
+      $totalPengeluaran = \App\Models\Donation::count();
+      $totalPengiriman = \App\Models\Donation::where('status', 'claimed')->count();
+      
+      // Menghitung total donasi hari ini
+      $donasiHarian = \App\Models\Donation::whereDate('created_at', \Carbon\Carbon::today())->sum('quantity');
+      
+      // Mengambil data restoran (penyedia)
+      $penyediaList = \App\Models\User::where('role', 'penyedia')
+        ->with(['donations' => function($query) {
+            $query->where('status', 'available');
+        }])
+        ->take(6)
+        ->get();
+    @endphp
+
     <div class="summary">
-      <div class="card">👤<div>Total Donatur<br><strong>13</strong></div></div>
-      <div class="card">🍽<div>Total Restoran<br><strong>16</strong></div></div>
-      <div class="card">⬇<div>Total Penerima<br><strong>0</strong></div></div>
-      <div class="card">🍱<div>Total Makanan Tersedia<br><strong>13</strong></div></div>
-      <div class="card">💸<div>Total Pengeluaran<br><strong>13</strong></div></div>
-      <div class="card">🚚<div>Total Pengiriman<br><strong>13</strong></div></div>
+      <div class="card">👤<div>Total Donatur<br><strong>{{ $totalDonatur }}</strong></div></div>
+      <div class="card">🍽<div>Total Restoran<br><strong>{{ $totalRestoran }}</strong></div></div>
+      <div class="card">⬇<div>Total Penerima<br><strong>{{ $totalPenerima }}</strong></div></div>
+      <div class="card">🍱<div>Total Makanan Tersedia<br><strong>{{ $totalMakananTersedia }}</strong></div></div>
+      <div class="card">💸<div>Total Pengeluaran<br><strong>{{ $totalPengeluaran }}</strong></div></div>
+      <div class="card">🚚<div>Total Pengiriman<br><strong>{{ $totalPengiriman }}</strong></div></div>
     </div>
 
     <div class="donasi-harian">
       <h3>Donasi Harian</h3>
-      <p style="font-size: 24px; font-weight: bold;">90pcs</p>
-      <p>9 February 2025</p>
+      <p style="font-size: 24px; font-weight: bold;">{{ $donasiHarian }}pcs</p>
+      <p>{{ \Carbon\Carbon::now()->format('d F Y') }}</p>
     </div>
 
     <h3 style="margin-bottom: 20px;">Restoran</h3>
     <div class="restoran">
-      @php
-        $restorans = [
-          (object)[ 'nama' => 'Gacoan', 'logo_url' => 'https://via.placeholder.com/50', 'kategori' => 'Makanan, Cepat Saji, Mie', 'views' => '302,624', 'likes' => '30,908', 'comments' => '33' ],
-          (object)[ 'nama' => 'Solaria', 'logo_url' => 'https://via.placeholder.com/50', 'kategori' => 'Makanan, Restoran, Terjamin', 'views' => '101,650', 'likes' => '26,743', 'comments' => '209' ],
-          (object)[ 'nama' => 'Kopi Kenangan', 'logo_url' => 'https://via.placeholder.com/50', 'kategori' => 'Minuman, Kopi, Cepat Saji', 'views' => '234,504', 'likes' => '13,301', 'comments' => '184' ],
-          (object)[ 'nama' => 'Wings O Wings', 'logo_url' => 'https://via.placeholder.com/50', 'kategori' => 'Makanan, Ayam, Aneka Ragam', 'views' => '433,204', 'likes' => '36,050', 'comments' => '38' ],
-          (object)[ 'nama' => 'Ayam Crisbar', 'logo_url' => 'https://via.placeholder.com/50', 'kategori' => 'Ayam, Cepat Saji, Murah', 'views' => '401,456', 'likes' => '24,753', 'comments' => '260' ],
-          (object)[ 'nama' => 'Burger King', 'logo_url' => 'https://via.placeholder.com/50', 'kategori' => 'Makanan, Cepat Saji, Restoran', 'views' => '242,634', 'likes' => '23,430', 'comments' => '134' ],
-        ];
-      @endphp
-
-      @foreach($restorans as $resto)
+      @forelse($penyediaList as $penyedia)
       <div class="restoran-card">
-        <img src="{{ $resto->logo_url }}" alt="Logo">
+        <img src="https://via.placeholder.com/50" alt="Logo">
         <div class="restoran-info">
-          <h4>{{ $resto->nama }}</h4>
-          <div class="tags">{{ $resto->kategori }}</div>
-          <div class="stats">{{ $resto->views }} Views · {{ $resto->likes }} Likes · {{ $resto->comments }} comments</div>
+          <h4>{{ $penyedia->name }}</h4>
+          <div class="tags">
+            @php
+              $kategori = $penyedia->donations->pluck('category')->unique()->implode(', ');
+              echo $kategori ?: 'Belum ada kategori';
+            @endphp
+          </div>
+          <div class="stats">
+            {{ rand(100000, 500000) }} Views · {{ rand(10000, 50000) }} Likes · {{ rand(10, 300) }} comments
+          </div>
+          <a href="{{ route('receiver.request', ['restoId' => $penyedia->id]) }}" class="request-btn" style="display: inline-block; margin-top: 10px; background-color: #ffb703; color: #333; text-decoration: none; padding: 5px 10px; border-radius: 5px; font-weight: bold;">Request Donasi</a>
         </div>
       </div>
-      @endforeach
+      @empty
+      <div style="grid-column: span 3; text-align: center; padding: 20px; background-color: #f5f5f5; border-radius: 10px;">
+        Tidak ada restoran yang tersedia saat ini.
+      </div>
+      @endforelse
     </div>
     <p class="footer-note">See Details</p>
   </main>
