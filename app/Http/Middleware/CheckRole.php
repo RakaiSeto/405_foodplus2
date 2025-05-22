@@ -15,6 +15,8 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
+        echo $request()->user()->role;
+        die;
         if ($request->user()->role !== $role) {
             return redirect('/');
         }

@@ -151,7 +151,7 @@
       </div>
     </div>
 
-    @php
+    {{-- @php
       // Mengambil data statistik dari database
       $totalDonatur = \App\Models\User::where('role', 'penyedia')->count();
       $totalRestoran = \App\Models\User::where('role', 'penyedia')->count();
@@ -170,26 +170,26 @@
         }])
         ->take(6)
         ->get();
-    @endphp
+    @endphp --}}
 
-    <div class="summary">
-      <div class="card">👤<div>Total Donatur<br><strong>{{ $totalDonatur }}</strong></div></div>
-      <div class="card">🍽<div>Total Restoran<br><strong>{{ $totalRestoran }}</strong></div></div>
-      <div class="card">⬇<div>Total Penerima<br><strong>{{ $totalPenerima }}</strong></div></div>
-      <div class="card">🍱<div>Total Makanan Tersedia<br><strong>{{ $totalMakananTersedia }}</strong></div></div>
-      <div class="card">💸<div>Total Pengeluaran<br><strong>{{ $totalPengeluaran }}</strong></div></div>
-      <div class="card">🚚<div>Total Pengiriman<br><strong>{{ $totalPengiriman }}</strong></div></div>
+    <div class="summary" id="summary">
+      <div class="card" id="total-donatur">👤<div>Total Donatur<br><strong>{{ $totalDonatur ??= 0 }}</strong></div></div>
+      <div class="card" id="total-restoran">🍽<div>Total Restoran<br><strong>{{ $totalRestoran  ??= 0 }}</strong></div></div>
+      <div class="card" id="total-penerima">⬇<div>Total Penerima<br><strong>{{ $totalPenerima  ??= 0}}</strong></div></div>
+      <div class="card" id="total-makanan">🍱<div>Total Makanan Tersedia<br><strong>{{ $totalMakananTersedia  ??= 0 }}</strong></div></div>
+      {{-- <div class="card">💸<div>Total Pengeluaran<br><strong>{{ $totalPengeluaran  ??= 0 }}</strong></div></div> --}}
+      {{-- <div class="card">🚚<div>Total Pengiriman<br><strong>{{ $totalPengiriman  ??= 0 }}</strong></div></div> --}}
     </div>
 
-    <div class="donasi-harian">
+    <div class="donasi-harian" id="donasi-harian">
       <h3>Donasi Harian</h3>
-      <p style="font-size: 24px; font-weight: bold;">{{ $donasiHarian }}pcs</p>
+      <p style="font-size: 24px; font-weight: bold;">{{ $donasiHarian  ??= 0 }}pcs</p>
       <p>{{ \Carbon\Carbon::now()->format('d F Y') }}</p>
     </div>
 
     <h3 style="margin-bottom: 20px;">Restoran</h3>
-    <div class="restoran">
-      @forelse($penyediaList as $penyedia)
+    <div class="restoran" id="restoran">
+      {{-- @forelse($penyediaList as $penyedia)
       <div class="restoran-card">
         <img src="https://via.placeholder.com/50" alt="Logo">
         <div class="restoran-info">
@@ -210,12 +210,81 @@
       <div style="grid-column: span 3; text-align: center; padding: 20px; background-color: #f5f5f5; border-radius: 10px;">
         Tidak ada restoran yang tersedia saat ini.
       </div>
-      @endforelse
+      @endforelse --}}
     </div>
     <p class="footer-note">See Details</p>
   </main>
 
   <script>
+    const summaryComponent = document.getElementById("summary");
+    const donasiHarian = document.getElementById("donasi-harian")
+    const totalDonatur = document.getElementById("total-donatur")
+    const totalRestoran = document.getElementById("total-restoran")
+    const totalPenerima = document.getElementById("total-penerima")
+    const totalMakanan = document.getElementById("total-makanan")
+
+    const restoranCard = document.getElementById("restoran");
+
+    fetch("http://localhost:8000/api/statistics/receiver/dashboard/summary", {method: "GET"}).then(response => response.json()).then(({data}) => {
+        const totalResto = data.total_resto;
+        const totalDonation = data.total_donation;
+        const todayDonation = data.today_donation;
+        const totalReceiver = data.total_receiver;
+        totalDonatur.innerHTML = `
+        <div class='flex items-center'>
+            <span>👤</span>
+            Total Donatur<br><strong>${totalResto}</strong></div>`
+                    totalRestoran.innerHTML = `
+        <div class='flex items-center'>
+            <span>🍽</span>
+            Total Donatur<br><strong>${totalResto}</strong></div>`
+                    totalPenerima.innerHTML = `
+        <div class='flex items-center'>
+            <span>⬇</span>
+            Total Donatur<br><strong>${totalReceiver}</strong></div>`
+                    totalMakanan.innerHTML = `
+        <div class='flex items-center'>
+            <span>🍱</span>
+            Total Donatur<br><strong>${totalDonation}</strong></div>`
+        donasiHarian.innerHTML = `
+             <h3>Donasi Harian</h3>
+            <p style="font-size: 24px; font-weight: bold;">${todayDonation} pcs</p>
+            <p>{{ \Carbon\Carbon::now()->format('d F Y') }}</p>
+        `
+    })
+
+
+    fetch('/api/donations', {headers: {
+            "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+    }}).then(response => response.json()).then(({data}) => {
+        restoranCard.innerHTML = ``;
+        console.log({data});
+        data.map(donation => {
+            console.log({donation})
+            restoranCard.innerHTML += `
+        <div class="restoran-card">
+        <img src="https://via.placeholder.com/50" alt="Logo">
+        <div class="restoran-info">
+          <h4>${donation.food_name} - ${donation.user.name}</h4>
+          <div class="tags">
+          ${donation.category}
+          </div>
+          <div class="stats">
+                <p class="mt-2 text-sm text-gray-200">302,624 Views ·  3000 Likes · 400 comments</p>
+          </div>
+          <button type="button" id="request-donasi" class="request-btn " style="cursor: pointer; display: inline-block; margin-top: 10px; background-color: #ffb703; color: #333; padding: 5px 10px; border-radius: 5px; font-weight: bold;" id="request-donasi">
+            Request Donasi
+        </button>
+        </div>
+      </div>
+        `
+        const requestDonationButton = document.getElementById("request-donasi")
+        requestDonationButton.addEventListener("click", () => {
+            window.location.href = `http://localhost:8000/receiver/request/${donation.id}`
+        })
+        })
+
+    })
     function toggleDropdown() {
       const dropdown = document.getElementById('userDropdown');
       dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';

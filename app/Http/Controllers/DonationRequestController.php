@@ -3,13 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\DonationRequest;
 use App\Models\Donation;
-use App\Models\Transaction;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Support\Facades\Auth;
 
 class DonationRequestController extends Controller implements HasMiddleware
 {
@@ -30,6 +26,8 @@ class DonationRequestController extends Controller implements HasMiddleware
             "donor_id" => $donation->user_id,
             "donation_id" => $donation->id
         ]);
+        $donation->quantity -= $validatedData["quantity"];
+        $donation->save();
 
         return response()->json([
             "status" => "Success",
