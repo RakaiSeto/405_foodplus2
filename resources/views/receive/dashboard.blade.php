@@ -159,10 +159,10 @@
       $totalMakananTersedia = \App\Models\Donation::where('status', 'available')->count();
       $totalPengeluaran = \App\Models\Donation::count();
       $totalPengiriman = \App\Models\Donation::where('status', 'claimed')->count();
-      
+
       // Menghitung total donasi hari ini
       $donasiHarian = \App\Models\Donation::whereDate('created_at', \Carbon\Carbon::today())->sum('quantity');
-      
+
       // Mengambil data restoran (penyedia)
       $penyediaList = \App\Models\User::where('role', 'penyedia')
         ->with(['donations' => function($query) {
