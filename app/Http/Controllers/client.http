@@ -1,2 +1,4 @@
 POST http://localhost:8000/api/donations/3/requests
+
+GET http://localhost:8000/api/statistics/receiver/dashboard/summary
 Accept: application/json

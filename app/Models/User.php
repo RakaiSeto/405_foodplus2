@@ -56,4 +56,8 @@ class User extends Authenticatable
     public function transactions(): HasMany {
         return $this->hasMany(Transaction::class, "receiver_id");
     }
+
+    public static function getTotalCount(String $column, $value) {
+       return User::where($column, $value)->count();
+    }
 }
