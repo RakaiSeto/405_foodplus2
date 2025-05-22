@@ -119,30 +119,19 @@
 
     @push('scripts')
     <script>
-        const foodDatabase = {!! json_encode([
-            "KFC" => [
-                ["name" => "Paha Atas", "image" => asset("assets/images/food/paha-atas.jpg"), "available" => 13],
-                ["name" => "Paha Bawah", "image" => asset("assets/images/food/paha-bawah.jpg"), "available" => 2],
-                ["name" => "Dada", "image" => asset("assets/images/food/dada.jpg"), "available" => 4],
-                ["name" => "Kentang Goreng", "image" => asset("assets/images/food/kentang.jpg"), "available" => 13],
-                ["name" => "Cream Soup", "image" => asset("assets/images/food/soup.jpg"), "available" => 1],
-                ["name" => "Chicken Wing", "image" => asset("assets/images/food/wing.jpg"), "available" => 10],
-            ],
-            // Tambahkan data restoran lain sesuai kebutuhan...
-        ]) !!};
 
         let foodItems = [];
 
-        function initializePage() {
-            const container = document.getElementById('foodContainer');
-            const urlParams = new URLSearchParams(window.location.search);
-            const restoranNama = urlParams.get('restoran') || 'KFC';
-            document.getElementById('restoranNama').textContent = restoranNama;
+        // function initializePage() {
+        //     const container = document.getElementById('foodContainer');
+        //     const urlParams = new URLSearchParams(window.location.search);
+        //     const restoranNama = urlParams.get('restoran') || 'KFC';
+        //     document.getElementById('restoranNama').textContent = restoranNama;
 
-            foodItems = foodDatabase[restoranNama] || [];
-            const foodCards = foodItems.map(food => createFoodCard(food)).join('');
-            container.innerHTML = foodCards;
-        }
+        //     foodItems = foodDatabase[restoranNama] || [];
+        //     const foodCards = foodItems.map(food => createFoodCard(food)).join('');
+        //     container.innerHTML = foodCards;
+        // }
 
         function createFoodCard(food) {
             return `
@@ -151,7 +140,7 @@
                     <h3 class="food-name">${food.name}</h3>
                     <p class="available-text">Jumlah yang tersedia: ${food.available}</p>
                     <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${food.name}">
-                    <p class="items-text">X2 items</p>
+                    <p class="items-text">X1 items</p>
                     <div class="action-buttons">
                         <button class="btn btn-cancel" onclick="cancelRequest('${food.name}')">×</button>
                         <button class="btn btn-confirm" onclick="confirmRequest('${food.name}')">✓</button>
@@ -165,26 +154,67 @@
             input.value = '';
         }
 
-        function confirmRequest(foodName) {
-            const input = document.getElementById(`quantity-${foodName}`);
+        let fetchedDonation = null;
+
+        function confirmRequest(donation) {
+            console.log({fetchedDonation})
+            const input = document.getElementById(`quantity-${fetchedDonation.food_name}`);
             const quantity = parseInt(input.value);
-            const food = foodItems.find(f => f.name === foodName);
+            console.log({quantity});
 
             if (!quantity || quantity < 1) {
                 alert('Mohon masukkan jumlah yang valid');
                 return;
             }
 
-            if (quantity > food.available) {
-                alert(`Jumlah melebihi stok yang tersedia (${food.available})`);
+            if (quantity > fetchedDonation.quantity) {
+                alert(`Jumlah melebihi stok yang tersedia (${fetchedDonation.quantity})`);
                 return;
             }
 
-            alert(`Request ${quantity} ${foodName} berhasil diproses!`);
-            input.value = '';
+            fetch(`http://localhost:8000/api/donations/${fetchedDonation.id}/requests`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    quantity: input.value
+                })
+            }).then(response => response.json()).then(val => {alert(val.message)
+                window.location.href = "http://localhost:8000/receive/dashboard"
+            })
+            .catch(err => console.log({err}))
         }
 
-        window.onload = initializePage;
+        const path = window.location.pathname;
+        const segments = path.split("/");
+        const foodContainer = document.getElementById("foodContainer");
+
+        fetch(`http://localhost:8000/api/donations/${+segments[3]}`).then(response => response.json()).then(({data: donation}) => {
+            fetchedDonation = donation
+            const jsonDonation = JSON.stringify(donation)
+            foodContainer.innerHTML += `
+             <div class="food-card">
+                    <img src="" alt="" class="food-image">
+                    <h3 class="food-name">${donation.food_name}</h3>
+                    <p class="available-text">Jumlah yang tersedia: ${donation.quantity}</p>
+                    <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${donation.food_name}">
+                    <p class="items-text" id="item-text">X1 items</p>
+                    <div class="action-buttons">
+                        <button class="btn btn-cancel" onclick="cancelRequest(${donation.id})">×</button>
+                        <button class="btn btn-confirm" onclick="confirmRequest(${donation.id})">✓</button>
+                    </div>
+                </div>
+            `
+            const quantityButton = document.getElementById(`quantity-${donation.food_name}`);
+            const itemText = document.getElementById("item-text");
+            quantityButton.addEventListener("input", (event) => {
+                const value = event.target.value;
+                itemText.textContent = `X${value} items`;
+            })
+            console.log({donation})
+        });
     </script>
     @endpush
 

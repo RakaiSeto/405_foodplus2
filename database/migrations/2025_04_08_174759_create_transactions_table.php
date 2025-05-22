@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class, "receiver_id");
             $table->foreignIdFor(Donation::class, "donation_id");
             $table->enum("status", ["pending", "completed", "cancelled"])->default("pending");
+
             $table->timestamps();
         });
     }

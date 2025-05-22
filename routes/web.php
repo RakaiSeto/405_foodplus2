@@ -148,13 +148,17 @@ Route::get('/guest/manajemendonasi', function () {
 })->name('guest.manajemendonasi');
 
 // Routes untuk penerima donasi
-Route::middleware(['auth', 'role:receiver'])->group(function () {
-    Route::get('/receiver/dashboard', [App\Http\Controllers\DonationRequestController::class, 'dashboard'])->name('receiver.dashboard');
-    Route::get('/receiver/request/{restoId}', [App\Http\Controllers\DonationRequestController::class, 'showRequestForm'])->name('receiver.request');
-    Route::get('/receiver/requests', [App\Http\Controllers\DonationRequestController::class, 'myRequests'])->name('receiver.requests');
-    Route::get('/receiver/history', [App\Http\Controllers\DonationRequestController::class, 'history'])->name('receiver.history');
-    Route::post('/receiver/request', [App\Http\Controllers\DonationRequestController::class, 'store'])->name('donation.request');
-});
+// Route::middleware(['auth:sanctum', 'role:penerima'])->group(function () {
+//     Route::get('/receiver/dashboard', [App\Http\Controllers\DonationRequestController::class, 'dashboard'])->name('receiver.dashboard');
+//     Route::get('/receiver/request/{restoId}', [App\Http\Controllers\DonationRequestController::class, 'showRequestForm'])->name('receiver.request');
+//     Route::get('/receiver/requests', [App\Http\Controllers\DonationRequestController::class, 'myRequests'])->name('receiver.requests');
+//     Route::get('/receiver/history', [App\Http\Controllers\DonationRequestController::class, 'history'])->name('receiver.history');
+//     Route::post('/receiver/request', [App\Http\Controllers\DonationRequestController::class, 'store'])->name('donation.request');
+// });
+Route::get('/receiver/request/{restoId}', function () {
+    return view("request donasi.request");
+})->name('receiver.request');
+
 
 // API routes
 Route::prefix('api')->group(function () {
