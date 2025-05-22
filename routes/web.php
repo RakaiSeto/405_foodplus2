@@ -146,3 +146,19 @@ Route::get('/guest/manajemendonasi', function () {
     $donations = \App\Models\Donation::all();
     return view('guest.manajemendonasi', ['donations' => $donations]);
 })->name('guest.manajemendonasi');
+
+// Routes untuk penerima donasi
+Route::middleware(['auth', 'role:receiver'])->group(function () {
+    Route::get('/receiver/dashboard', [App\Http\Controllers\DonationRequestController::class, 'dashboard'])->name('receiver.dashboard');
+    Route::get('/receiver/request/{restoId}', [App\Http\Controllers\DonationRequestController::class, 'showRequestForm'])->name('receiver.request');
+    Route::get('/receiver/requests', [App\Http\Controllers\DonationRequestController::class, 'myRequests'])->name('receiver.requests');
+    Route::get('/receiver/history', [App\Http\Controllers\DonationRequestController::class, 'history'])->name('receiver.history');
+    Route::post('/receiver/request', [App\Http\Controllers\DonationRequestController::class, 'store'])->name('donation.request');
+});
+
+// API routes
+Route::prefix('api')->group(function () {
+    Route::get('/donations/available', [App\Http\Controllers\DonationRequestController::class, 'getAvailableDonations']);
+});
+
+// ... existing code ...
