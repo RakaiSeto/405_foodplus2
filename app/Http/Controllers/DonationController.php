@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Donation;
 use App\Models\User;
+use App\Notifications\DonationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class DonationController extends Controller implements HasMiddleware
@@ -63,6 +65,10 @@ class DonationController extends Controller implements HasMiddleware
             ...$validatedData,
             "user_id" => $request->user()->id
         ]);
+$subscribers = User::whereHas('subscriptions', function($query) use ($request) {
+    $query->where('donor_id', $request->user()->id);
+})->get();
+        Notification::send($subscribers, new DonationNotification($donation, $request->user()));
         return redirect()->route("dashboard.donate");
 
         // return response()->json([
