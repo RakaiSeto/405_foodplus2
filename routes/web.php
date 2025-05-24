@@ -87,6 +87,7 @@ Route::post('/login', function (Request $request) {
     return $response;
 })->name('login.submit');
 
+// MIDDLEWARE
 // Route untuk dashboard donatur (yang sudah login)
     // Dashboard donatur
     Route::get('/donate/dashboard', function () {
@@ -121,6 +122,8 @@ Route::post('/login', function (Request $request) {
     Route::get('/donations/{donation}/edit', function (Donation $donation) {
         return view('donate.edit', ["donation" => $donation]);
     })->name('donations.edit');
+
+    // MIDDLEWARE
 
 
     Route::put('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
