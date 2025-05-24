@@ -143,9 +143,9 @@
         </button>
         <div id="userDropdown" style="display: none; position: absolute; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10;">
           <a href="#" style="display: block; padding: 10px 20px; text-decoration: none; color: #0f172a;">Profile</a>
-          <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+          <form method="POST" style="margin: 0;">
             @csrf
-            <button type="submit" style="display: block; width: 100%; text-align: left; padding: 10px 20px; background: none; border: none; cursor: pointer; color: #0f172a;">Log Out</button>
+            <button type="submit" style="display: block; width: 100%; text-align: left; padding: 10px 20px; background: none; border: none; cursor: pointer; color: #0f172a;" id="logout-button">Log Out</button>
           </form>
         </div>
       </div>
@@ -225,7 +225,7 @@
 
     const restoranCard = document.getElementById("restoran");
 
-    fetch("http://localhost:8000/api/statistics/receiver/dashboard/summary", {method: "GET"}).then(response => response.json()).then(({data}) => {
+    fetch("/api/statistics/receiver/dashboard/summary", {method: "GET"}).then(response => response.json()).then(({data}) => {
         const totalResto = data.total_resto;
         const totalDonation = data.total_donation;
         const todayDonation = data.today_donation;
@@ -253,7 +253,6 @@
         `
     })
 
-
     fetch('/api/donations', {headers: {
             "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
     }}).then(response => response.json()).then(({data}) => {
@@ -263,7 +262,7 @@
             console.log({donation})
             restoranCard.innerHTML += `
         <div class="restoran-card">
-        <img src="https://via.placeholder.com/50" alt="Logo">
+        <img src="http://localhost:8000/storage/${donation.image_url}" alt="Logo">
         <div class="restoran-info">
           <h4>${donation.food_name} - ${donation.user.name}</h4>
           <div class="tags">
@@ -285,6 +284,15 @@
         })
 
     })
+
+    fetch("/api/notifications", {headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+    }}).then(response => response.json())
+    .then(notification => {
+        console.log({notification})
+        console.log(localStorage.getItem("accessToken"))
+    }).catch(err => console.log({err}))
+
     function toggleDropdown() {
       const dropdown = document.getElementById('userDropdown');
       dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
@@ -297,6 +305,23 @@
         dropdown.style.display = 'none';
       }
     });
+
+     const logoutButtonElement = document.getElementById("logout-button");
+            logoutButtonElement.addEventListener("click",  async e => {
+                e.preventDefault();
+                console.log("clicked");
+                try{
+                const response = await fetch("/api/auth/logout", {method: "POST", headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    "Content-Type": "application/json"
+                }});
+                const json = await response.json();
+                localStorage.removeItem("accessToken");
+                window.location.href = "/"
+                }catch(err){
+                    alert(err.message);
+                }
+            })
   </script>
 </body>
 </html>

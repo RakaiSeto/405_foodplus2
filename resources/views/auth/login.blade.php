@@ -62,14 +62,54 @@
   <div class="right">
     <div class="login-box">
       <h2>Login</h2>
-      <form method="POST" action="{{ route('login') }}">
+      <form method="POST" id="login-form">
         @csrf
-        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
-        <input type="password" name="password" placeholder="Password" required />
+        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required id="email"/>
+        <input type="password" name="password" placeholder="Password" required id="password"/>
         <button type="submit" class="btn-yellow">Login</button>
       </form>
       <p>Belum punya akun? <a href="{{ route('register') }}">Register</a></p>
     </div>
+
+    <script>
+        const emailElement = document.getElementById("email");
+        const passwordElement = document.getElementById("password");
+        const form = document.getElementById("login-form");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = emailElement.value;
+            const password = passwordElement.value;
+            try{
+
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            });
+            const json = await response.json();
+            console.log({json});
+            const accessToken = json.data.accessToken
+            localStorage.setItem("accessToken", accessToken);
+            if(json.data.role === "penyedia") {
+                window.location.href = "http://localhost:8000/donate/dashboard"
+            }else if(json.data.role === "penerima") {
+                window.location.href = "http://localhost:8000/receive/dashboard"
+            }else {
+                window.location.href = "http://localhost:8000/receive/dashboard"
+            }
+            }catch(err) {
+                console.log({err});
+            }
+
+        })
+
+    </script>
   </div>
 </body>
 </html>

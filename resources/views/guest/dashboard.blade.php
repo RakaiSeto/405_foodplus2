@@ -46,103 +46,21 @@
           <img src="https://img.icons8.com/ios-filled/50/ffffff/restaurant.png" class="w-8 h-8" />
           <div>
             <p class="font-bold text-sm">Total Restoran</p>
-            <p class="text-xl font-bold">18</p>
+            <p class="text-xl font-bold" id="total-restoran">0</p>
           </div>
         </div>
         <div class="bg-[#C5F0EA] p-4 rounded flex items-center space-x-4">
           <img src="https://img.icons8.com/ios-filled/50/000000/meal.png" class="w-8 h-8" />
           <div>
             <p class="font-bold text-sm">Total Makanan Tersedia</p>
-            <p class="text-xl font-bold">13</p>
+            <p class="text-xl font-bold" id="total-makanan">0</p>
           </div>
         </div>
       </div>
 
  <!-- Grid Restoran -->
- @php
-        $restoranData = [
-          ['nama' => 'Gacoan', 'tags' => ['Makanan', 'Cepat Saji', 'Mie'], 'views' => '302,624', 'likes' => '30,208', 'comments' => '33'],
-          ['nama' => 'Wings O Wings', 'tags' => ['Makanan', 'Ayam', 'Aneka Ragam'], 'views' => '431,204', 'likes' => '36,650', 'comments' => '38'],
-          ['nama' => 'KFC', 'tags' => ['Restoran', 'Ayam', 'Legend'], 'views' => '511,624', 'likes' => '56,650', 'comments' => '50'],
-          ['nama' => 'Hokben', 'tags' => ['Makanan', 'Jepang', 'Cepat Saji'], 'views' => '204,504', 'likes' => '10,023', 'comments' => '101'],
-          ['nama' => 'Martabak Pecenongan', 'tags' => ['Enak', 'Martabak', 'Manis & Asin'], 'views' => '243,504', 'likes' => '20,120', 'comments' => '108'],
-          ['nama' => 'Ayam Koplo', 'tags' => ['Ayam', 'Murah', 'Cepat Saji'], 'views' => '341,624', 'likes' => '23,340', 'comments' => '244'],
-          ['nama' => 'Solaria', 'tags' => ['Makanan', 'Restoran', 'Terjamin'], 'views' => '101,650', 'likes' => '26,743', 'comments' => '209'],
-          ['nama' => 'Ayam Crisbar', 'tags' => ['Ayam', 'Cepat Saji', 'Murah'], 'views' => '401,956', 'likes' => '24,753', 'comments' => '269'],
-          ['nama' => 'Mang Katsu', 'tags' => ['Ayam', 'Cepat Saji', 'Murah'], 'views' => '601,956', 'likes' => '34,753', 'comments' => '350'],
-          ['nama' => 'Pizza Hut', 'tags' => ['Makanan', 'Cepat Saji', 'Pizza'], 'views' => '324,568', 'likes' => '34,856', 'comments' => '56'],
-          ['nama' => 'Taco Bell', 'tags' => ['Makanan', 'Cepat Saji', 'Aneka Ragam'], 'views' => '423,234', 'likes' => '130,456', 'comments' => '22'],
-          ['nama' => 'Sushi TEI', 'tags' => ['Restoran', 'Jepang', 'Fresh'], 'views' => '451,234', 'likes' => '45,200', 'comments' => '56'],
-          ['nama' => 'Kopi Kenangan', 'tags' => ['Minuman', 'Kopi', 'Cepat Saji'], 'views' => '234,504', 'likes' => '13,301', 'comments' => '184'],
-          ['nama' => 'Burger King', 'tags' => ['Makanan', 'Cepat Saji', 'Restoran'], 'views' => '242,634', 'likes' => '23,450', 'comments' => '134'],
-          ['nama' => 'Starbucks', 'tags' => ['Minuman', 'Enak', 'Culture'], 'views' => '242,634', 'likes' => '15,920', 'comments' => '158'],
-          ['nama' => 'Tuku', 'tags' => ['Minuman', 'Kopi', 'Enak'], 'views' => '473,956', 'likes' => '24,753', 'comments' => '295'],
-          ['nama' => 'Point Coffee', 'tags' => ['Minuman', 'Aneka Ragam', 'Murah'], 'views' => '333,956', 'likes' => '24,753', 'comments' => '203'],
-          ['nama' => 'J.CO', 'tags' => ['Donat', 'Manis & Asin', 'Makanan'], 'views' => '357,845', 'likes' => '24,753', 'comments' => '195'],
-        ];
 
-        // Bagi data menjadi 3 kolom
-        $chunk = ceil(count($restoranData) / 3);
-        $column1 = array_slice($restoranData, 0, $chunk);
-        $column2 = array_slice($restoranData, $chunk, $chunk);
-        $column3 = array_slice($restoranData, $chunk * 2);
-      @endphp
-
-      <!-- Grid layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="donation-container">
-        <!-- Kolom 1 -->
-        {{-- <div class="space-y-4">
-          @foreach ($column1 as $resto)
-            <div class="bg-[#4E9A9A] p-4 rounded text-white flex items-start space-x-4">
-              <img src="{{ asset('images/restaurant-logo.png') }}" onerror="this.src='https://via.placeholder.com/50'" class="w-12 h-12 rounded" />
-              <div>
-                <h4 class="font-bold text-lg">{{ $resto['nama'] }}</h4>
-                <div class="flex flex-wrap gap-2 mt-1 text-xs">
-                  @foreach ($resto['tags'] as $tag)
-                    <span class="bg-[#317873] px-2 py-1 rounded">{{ $tag }}</span>
-                  @endforeach
-                </div>
-                <p class="mt-2 text-sm text-gray-200">{{ $resto['views'] }} Views · {{ $resto['likes'] }} Likes · {{ $resto['comments'] }} comments</p>
-              </div>
-            </div>
-          @endforeach
-        </div> --}}
-
-        <!-- Kolom 2 -->
-        {{-- <div class="space-y-4">
-          @foreach ($column2 as $resto)
-            <div class="bg-[#4E9A9A] p-4 rounded text-white flex items-start space-x-4">
-              <img src="{{ asset('images/restaurant-logo.png') }}" onerror="this.src='https://via.placeholder.com/50'" class="w-12 h-12 rounded" />
-              <div>
-                <h4 class="font-bold text-lg">{{ $resto['nama'] }}</h4>
-                <div class="flex flex-wrap gap-2 mt-1 text-xs">
-                  @foreach ($resto['tags'] as $tag)
-                    <span class="bg-[#317873] px-2 py-1 rounded">{{ $tag }}</span>
-                  @endforeach
-                </div>
-                <p class="mt-2 text-sm text-gray-200">{{ $resto['views'] }} Views · {{ $resto['likes'] }} Likes · {{ $resto['comments'] }} comments</p>
-              </div>
-            </div>
-          @endforeach
-        </div> --}}
-
-        <!-- Kolom 3 -->
-        {{-- <div class="space-y-4">
-          @foreach ($column3 as $resto)
-            <div class="bg-[#4E9A9A] p-4 rounded text-white flex items-start space-x-4">
-              <img src="{{ asset('images/restaurant-logo.png') }}" onerror="this.src='https://via.placeholder.com/50'" class="w-12 h-12 rounded" />
-              <div>
-                <h4 class="font-bold text-lg">{{ $resto['nama'] }}</h4>
-                <div class="flex flex-wrap gap-2 mt-1 text-xs">
-                  @foreach ($resto['tags'] as $tag)
-                    <span class="bg-[#317873] px-2 py-1 rounded">{{ $tag }}</span>
-                  @endforeach
-                </div>
-                <p class="mt-2 text-sm text-gray-200">{{ $resto['views'] }} Views · {{ $resto['likes'] }} Likes · {{ $resto['comments'] }} comments</p>
-              </div>
-            </div>
-          @endforeach
-        </div> --}}
       </div>
     </div>
   </div>
@@ -158,6 +76,17 @@
             `
             return;
         }
+
+        const totalMakanan = document.getElementById("total-makanan");
+        const totalRestoran= document.getElementById("total-restoran");
+            fetch("/api/statistics/receiver/dashboard/summary", {method: "GET"}).then(response => response.json()).then(({data}) => {
+        const totalResto = data.total_resto;
+        const totalDonation = data.total_donation;
+        totalMakanan.textContent = totalDonation;
+        totalRestoran.textContent = totalResto;
+    })
+
+
         data.forEach(resto => {
             console.log({resto});
             const imageUrl = `http://localhost:8000/storage/${resto.image_url}`;
