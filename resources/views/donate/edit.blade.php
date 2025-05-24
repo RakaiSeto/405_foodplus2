@@ -92,9 +92,42 @@
 
             <div class="content">
                 <div class="form-container">
-                    <form action="{{ route('donations.update', $donation->id) }}" method="POST">
+                    <form action="{{ route('donations.update', $donation->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label
+                                class="form-label"
+                                for="image"
+                                style="display: block; font-weight: bold; margin-bottom: 8px; font-size: 16px; color: #333;"
+                            >
+                                Upload Gambar Makanan
+                            </label>
+
+                            {{-- Input Upload File --}}
+                            <input
+                                type="file"
+                                name="image"
+                                id="image"
+                                style="
+                                    display: block;
+                                    padding: 10px;
+                                    font-size: 14px;
+                                    border: 2px dashed #aaa;
+                                    border-radius: 8px;
+                                    width: 100%;
+                                    cursor: pointer;
+                                    transition: border-color 0.3s ease;
+                                "
+                                onmouseover="this.style.borderColor='#777'"
+                                onmouseout="this.style.borderColor='#aaa'"
+                            >
+
+                            <small style="color: #666; font-size: 12px;">
+                                Format gambar harus .jpg, .jpeg, atau .png. Maksimal 4MB.
+                            </small>
+                        </div>
+
                         <div class="form-group">
                             <label class="form-label">Nama Makanan</label>
                             <input type="text" name="food_name" class="form-input" value="{{ $donation->food_name }}" required>

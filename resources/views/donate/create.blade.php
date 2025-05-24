@@ -106,7 +106,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('donations.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('donations.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group" style="margin-bottom: 20px;">
                             <label

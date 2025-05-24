@@ -99,7 +99,7 @@ class DonationController extends Controller implements HasMiddleware
 
         if($request->hasFile("image")) {
             if($donation->image_url && Storage::disk("public")->exists($donation->image_url)) {
-                Storage::disk("publilc")->delete($donation->image_url);
+                Storage::disk("public")->delete($donation->image_url);
             }
             $validatedData["image_url"] = $request->file("image")->store("donation-images", "public");
 
