@@ -57,6 +57,15 @@ class User extends Authenticatable
         return $this->hasMany(Transaction::class, "receiver_id");
     }
 
+    public function subscriptions():HasMany {
+        return $this->hasMany(Subscription::class, "receiver_id");
+    }
+
+    public function subscribers(): HasMany {
+        return $this->hasMany(Subscription::class, "donor_id");
+    }
+
+
     public static function getTotalCount(String $column, $value) {
        return User::where($column, $value)->count();
     }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\DonationRequestController;
 use App\Http\Controllers\StatisticController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,7 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource("donations", DonationController::class);
 Route::apiResource("donations.requests", DonationRequestController::class);
+Route::apiResource("subscriptions", SubscriptionController::class);
 
 Route::post("/auth/register", [AuthController::class, "register"]);
 Route::post("/auth/login", [AuthController::class, "login"]);

@@ -30,5 +30,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::define("update-donation", function (User $user, Donation $donation) {
             return $user->role === "penyedia" && $user->id === $donation->user_id;
         });
+
+    Gate::define("subscription", function (User $user, User $userToSubscribe) {
+            $isAlreadySubscribedToResto = $user->subscriptions()->where("donor_id", $userToSubscribe->id)->exists();
+            abort_if(!!$isAlreadySubscribedToResto, 400, "Already Subscribed to this resto");
+            return $user->id !== $userToSubscribe->id && $user->role === "penerima" && $userToSubscribe->role === "penyedia";
+        });
     }
 }
