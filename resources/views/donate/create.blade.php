@@ -8,7 +8,7 @@
     <!-- Import Google Font: Poppins -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: #ffffff; }
@@ -105,9 +105,40 @@
                             </ul>
                         </div>
                     @endif
-                    
-                    <form action="{{ route('donations.store') }}" method="POST">
+
+                    <form action="{{ route('donations.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label
+                                class="form-label"
+                                for="image_url"
+                                style="display: block; font-weight: bold; margin-bottom: 8px; font-size: 16px; color: #333;"
+                            >
+                                Upload Gambar Makanan
+                            </label>
+
+                            <input
+                                type="file"
+                                name="image"
+                                id="image_url"
+                                required
+                                style="
+                                    display: block;
+                                    padding: 10px;
+                                    font-size: 14px;
+                                    border: 2px dashed #aaa;
+                                    border-radius: 8px;
+                                    width: 100%;
+                                    cursor: pointer;
+                                    transition: border-color 0.3s ease;
+                                "
+                                onmouseover="this.style.borderColor='#777'"
+                                onmouseout="this.style.borderColor='#aaa'"
+                            >
+                            <small style="color: #666; font-size: 12px;">
+                                Format gambar harus .jpg, .jpeg, atau .png. Maksimal 4MB.
+                            </small>
+                        </div>
                         <div class="form-group">
                             <label class="form-label">Nama Makanan</label>
                             <input type="text" name="food_name" class="form-input" value="{{ old('food_name') }}" required>

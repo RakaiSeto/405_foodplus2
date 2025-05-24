@@ -11,7 +11,7 @@ class Donation extends Model
 {
     use HasFactory;
     //
-    protected $fillable = ["food_name", "quantity", "location", "category", "user_id"];
+    protected $fillable = ["food_name", "quantity", "location", "category", "user_id", "image_url"];
 
     public function user():BelongsTo {
         return $this->belongsTo(User::class);

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class DonationController extends Controller implements HasMiddleware
 {
@@ -40,12 +41,19 @@ class DonationController extends Controller implements HasMiddleware
     }
 
     public function store(Request $request) {
+        // dd($request->all());
+
+
         $validatedData = $request->validate([
             "food_name" => "string|required",
             "quantity" => "integer|required",
             "location" => "string|required",
-            "category" => "string|required"
+            "category" => "string|required",
+            "image" => "image|mimes:jpeg,jpg,png|max:4096|nullable"
         ]);
+        if($request->hasFile("image")) {
+            $validatedData["image_url"] = $request->file("image")->store("donation-images", "public");
+        }
 
         if(!Gate::allows("insert-donation")) {
             abort(403, "Dont have access to this resource");
@@ -85,8 +93,17 @@ class DonationController extends Controller implements HasMiddleware
             "food_name" => "string|sometimes",
             "quantity" => "integer|sometimes",
             "location" => "string|sometimes",
-            "category" => "string|sometimes"
+            "category" => "string|sometimes",
+            "image" => "image|nullable|mimes:jpg,jpeg,png|max:4096"
         ]);
+
+        if($request->hasFile("image")) {
+            if($donation->image_url && Storage::disk("public")->exists($donation->image_url)) {
+                Storage::disk("publilc")->delete($donation->image_url);
+            }
+            $validatedData["image_url"] = $request->file("image")->store("donation-images", "public");
+
+        }
 
         $donation->update($validatedData);
 
