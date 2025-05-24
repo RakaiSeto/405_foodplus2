@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -30,7 +31,7 @@ class AuthController extends Controller
             "name" => "string|max:255|required",
             "email" => "email|max:255|required",
             "password" => "required|string|max:255",
-            "role" => Rule::enum(UserRole::class)
+            "role" => "string|required"
         ]);
     }
 
@@ -48,7 +49,8 @@ class AuthController extends Controller
             "status" => "success",
             "message" => "Login success",
             "data" => [
-                "accessToken" => $token->plainTextToken
+                "accessToken" => $token->plainTextToken,
+                "role" => $userExistOnDatabase->role
             ]]);
 
     }

@@ -88,7 +88,6 @@ Route::post('/login', function (Request $request) {
 })->name('login.submit');
 
 // Route untuk dashboard donatur (yang sudah login)
-Route::middleware(['auth:sanctum'])->group(function () {
     // Dashboard donatur
     Route::get('/donate/dashboard', function () {
         return view('donate.dashboard');
@@ -139,7 +138,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Redirect ke halaman guest setelah logout
         return redirect()->route('dashboard.guest');
     })->name('logout');
-});
 
 // Route untuk manajemen donasi (guest)
 Route::get('/guest/manajemendonasi', function () {

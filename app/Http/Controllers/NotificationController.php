@@ -18,12 +18,11 @@ class NotificationController extends Controller implements HasMiddleware
     }
 
     public function index(Request $request) {
+        $notifData = $request->user()->notifications()->get();
         return response()->json([
             "status" => "Success",
             "message" => "Notifications retrieved",
-            "data" => $request->user()->notifications()->get()->map(function ($notif) {
-                return $notif["data"];
-            })
+            "data" => $notifData
         ]);
     }
 

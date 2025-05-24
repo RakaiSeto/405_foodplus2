@@ -23,5 +23,6 @@ Route::post("/auth/login", [AuthController::class, "login"]);
 Route::post("/auth/logout", [AuthController::class, "logout"])->middleware("auth:sanctum");
 Route::get("/donations/resto/all", [DonationController::class, "getDonationsByResto"]);
 
+
 // Dashboard Statistic
 Route::get("/statistics/receiver/dashboard/summary", [StatisticController::class, "getReceiverStatisticDashboard"]);
