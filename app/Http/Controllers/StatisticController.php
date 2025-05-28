@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Donation;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class StatisticController extends Controller
 {
@@ -25,6 +27,21 @@ class StatisticController extends Controller
                 "today_donation" => $todayDonation
             ]
             ]);
+    }
+
+    public function getCountCommentsBelongToResto(Request $request, $restoId) {
+        $user = User::findOrFail($restoId);
+        $userWithDonationCommentCount = $user->donations()->withCount("comments")->get();
+        $countComment  = $userWithDonationCommentCount->sum("comments_count");
+
+        return response()->json([
+            "status" => "Success",
+            "message" => "Comment for resto {$restoId} is counted",
+            "data" => [
+                "user" => $userWithDonationCommentCount,
+                "totalComment" => $countComment
+            ]
+        ]);
     }
 
 }
