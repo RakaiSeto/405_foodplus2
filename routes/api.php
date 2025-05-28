@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\DonationRequestController;
 use App\Http\Controllers\NotificationController;
@@ -17,6 +18,7 @@ Route::apiResource("donations", DonationController::class);
 Route::apiResource("donations.requests", DonationRequestController::class);
 Route::apiResource("subscriptions", SubscriptionController::class);
 Route::apiResource("notifications", NotificationController::class);
+Route::apiResource("donations.comments", CommentController::class);
 
 Route::post("/auth/register", [AuthController::class, "register"]);
 Route::post("/auth/login", [AuthController::class, "login"]);

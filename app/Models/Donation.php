@@ -20,4 +20,8 @@ class Donation extends Model
     public function transactions(): HasMany {
         return $this->hasMany(Transaction::class);
     }
+
+    public function comments(): HasMany {
+        return $this->hasMany(Comment::class);
+    }
 }
