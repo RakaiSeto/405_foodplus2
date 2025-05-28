@@ -28,3 +28,4 @@ Route::get("/donations/resto/all", [DonationController::class, "getDonationsByRe
 
 // Dashboard Statistic
 Route::get("/statistics/receiver/dashboard/summary", [StatisticController::class, "getReceiverStatisticDashboard"]);
+Route::get("/statistics/restorants/{resto}/donations/comments", [StatisticController::class, "getCountCommentsBelongToResto"]);
