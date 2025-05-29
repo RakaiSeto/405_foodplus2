@@ -44,4 +44,19 @@ class StatisticController extends Controller
         ]);
     }
 
+    public function getCountLikedBelongToResto(Request $request, $restoId) {
+        $resto = User::findOrFail($restoId);
+        $userDonationLikedCount = $resto->donations()->withCount("likes")->get();
+        $likesCount = $userDonationLikedCount->sum("likes_count");
+
+        return response()->json([
+            "status" => "Success",
+            "message" => "Like for resto {$restoId} is counted",
+            "data" => [
+                "user" => $userDonationLikedCount,
+                "totalLike" => $likesCount
+            ]
+        ]);
+    }
+
 }
