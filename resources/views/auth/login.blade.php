@@ -101,7 +101,7 @@
             }else if(json.data.role === "penerima") {
                 window.location.href = "http://localhost:8000/receive/dashboard"
             }else {
-                window.location.href = "http://localhost:8000/receive/dashboard"
+                window.location.href = "http://localhost:8000/admin/dashboard";
             }
             }catch(err) {
                 console.log({err});

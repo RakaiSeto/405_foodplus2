@@ -104,6 +104,11 @@ Route::post('/login', function (Request $request) {
         return view('user.dashboard');
     })->name('dashboard.user');
 
+    // Dashboard admin
+    Route::get("/admin/dashboard", function () {
+        return view("Admin.dashboard");
+    })->name("dashboard.admin");
+
     // Route untuk donasi
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
     Route::get('/donations/create', function () {
