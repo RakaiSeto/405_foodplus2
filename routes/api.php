@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\DonationRequestController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\StatisticController;
 use App\Http\Controllers\SubscriptionController;
@@ -19,6 +20,7 @@ Route::apiResource("donations.requests", DonationRequestController::class);
 Route::apiResource("subscriptions", SubscriptionController::class);
 Route::apiResource("notifications", NotificationController::class);
 Route::apiResource("donations.comments", CommentController::class);
+Route::apiResource("donations.likes", LikeController::class);
 
 Route::post("/auth/register", [AuthController::class, "register"]);
 Route::post("/auth/login", [AuthController::class, "login"]);
@@ -29,3 +31,4 @@ Route::get("/donations/resto/all", [DonationController::class, "getDonationsByRe
 // Dashboard Statistic
 Route::get("/statistics/receiver/dashboard/summary", [StatisticController::class, "getReceiverStatisticDashboard"]);
 Route::get("/statistics/restorants/{resto}/donations/comments", [StatisticController::class, "getCountCommentsBelongToResto"]);
+Route::get("/statistics/restorants/{resto}/donations/likes", [StatisticController::class, "getCountLikedBelongToResto"]);

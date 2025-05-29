@@ -77,7 +77,6 @@ class User extends Authenticatable
     public function likes(): HasMany {
         return $this->hasMany(Like::class);
     }
-
     public function profile(): HasMany {
         return $this->hasMany(Profile::class);
     }
