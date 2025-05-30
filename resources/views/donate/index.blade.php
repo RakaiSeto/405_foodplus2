@@ -47,7 +47,7 @@
         <div class="sidebar">
             <div class="logo">FOOD+</div>
             <div class="sidebar-menu">
-                <a href="#" class="menu-item">
+                <a href="{{ route('profile.edit') }}" class="menu-item">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="currentColor">
                         <circle cx="12" cy="8" r="5" />
                         <path d="M3,21 L21,21 C21,16.0294373 16.9705627,12 12,12 C7.02943725,12 3,16.0294373 3,21 Z" />

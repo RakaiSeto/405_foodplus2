@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Models\Donation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -88,7 +89,8 @@ Route::post('/login', function (Request $request) {
 })->name('login.submit');
 
 // MIDDLEWARE
-// Route untuk dashboard donatur (yang sudah login)
+// Add all authenticated routes inside this middleware group
+Route::middleware(['web', 'auth'])->group(function () {
     // Dashboard donatur
     Route::get('/donate/dashboard', function () {
         return view('donate.dashboard');
@@ -103,6 +105,11 @@ Route::post('/login', function (Request $request) {
     Route::get('/user/dashboard', function () {
         return view('user.dashboard');
     })->name('dashboard.user');
+
+    // Dashboard admin
+    Route::get("/admin/dashboard", function () {
+        return view("Admin.dashboard");
+    })->name("dashboard.admin");
 
     // Route untuk donasi
     Route::get('/donations', [DonationController::class, 'index'])->name('donations.index');
@@ -128,19 +135,20 @@ Route::post('/login', function (Request $request) {
 
     Route::put('/donations/{donation}', [DonationController::class, 'update'])->name('donations.update');
     Route::delete('/donations/{donation}', [DonationController::class, 'destroy'])->name('donations.destroy');
+});
 
-    // Route untuk logout
-    Route::post('/logout', function (Request $request) {
-        // Instead of calling controller method, handle logout directly
-        Auth::guard('web')->logout();
+// Route untuk logout
+Route::post('/logout', function (Request $request) {
+    // Instead of calling controller method, handle logout directly
+    Auth::guard('web')->logout();
 
-        // Invalidate session and regenerate CSRF token
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    // Invalidate session and regenerate CSRF token
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        // Redirect ke halaman guest setelah logout
-        return redirect()->route('dashboard.guest');
-    })->name('logout');
+    // Redirect ke halaman guest setelah logout
+    return redirect()->route('dashboard.guest');
+})->name('logout');
 
 // Route untuk manajemen donasi (guest)
 Route::get('/guest/manajemendonasi', function () {
@@ -166,4 +174,6 @@ Route::prefix('api')->group(function () {
     Route::get('/donations/available', [App\Http\Controllers\DonationRequestController::class, 'getAvailableDonations']);
 });
 
-// ... existing code ...
+// Profile routes
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');

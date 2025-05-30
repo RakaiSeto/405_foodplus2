@@ -69,4 +69,17 @@ class User extends Authenticatable
     public static function getTotalCount(String $column, $value) {
        return User::where($column, $value)->count();
     }
+
+    public function comments(): HasMany {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function likes(): HasMany {
+        return $this->hasMany(Like::class);
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
 }

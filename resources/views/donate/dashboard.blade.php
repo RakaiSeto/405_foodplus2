@@ -183,14 +183,15 @@
                     </div>
                     <div class="dropdown">
                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-                            {{-- {{ Auth::user()->name }} --}}
                             Name
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <form method="POST">
+                                <a href="{{ route('profile.edit') }}" class="dropdown-item">Profile</a>
+                            </li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">Profile</button>
                                     <button type="submit" class="dropdown-item" id="logout-button">Log Out</button>
                                 </form>
                             </li>

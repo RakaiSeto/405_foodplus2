@@ -142,7 +142,7 @@
           <span>{{ Auth::user()->name ?? 'penerima' }} ▼</span>
         </button>
         <div id="userDropdown" style="display: none; position: absolute; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10;">
-          <a href="#" style="display: block; padding: 10px 20px; text-decoration: none; color: #0f172a;">Profile</a>
+          <a href="{{ route('profile.edit') }}" style="display: block; padding: 10px 20px; text-decoration: none; color: #0f172a;">Profile</a>
           <form method="POST" style="margin: 0;">
             @csrf
             <button type="submit" style="display: block; width: 100%; text-align: left; padding: 10px 20px; background: none; border: none; cursor: pointer; color: #0f172a;" id="logout-button">Log Out</button>
