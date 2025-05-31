@@ -337,7 +337,7 @@
                 });
             })
             .catch(error => {
-                console.error('Gagal mengambil data:', error);
+                console.error('Gagal mengambil data:', error.message);
                 document.getElementById('donation-table-body').innerHTML = '<tr><td colspan="7" class="text-center">Terjadi kesalahan saat memuat data</td></tr>';
             });
 
@@ -353,8 +353,7 @@
                 localStorage.removeItem("accessToken");
                 window.location.href = "/"
                 }catch(err){
-                    console.log({err});
-                    alert(err.message);
+                    console.log(err);
                 }
             })
     </script>

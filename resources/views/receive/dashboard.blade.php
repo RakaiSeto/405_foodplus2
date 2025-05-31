@@ -237,15 +237,15 @@
                     totalRestoran.innerHTML = `
         <div class='flex items-center'>
             <span>🍽</span>
-            Total Donatur<br><strong>${totalResto}</strong></div>`
+            Total Restoran<br><strong>${totalResto}</strong></div>`
                     totalPenerima.innerHTML = `
         <div class='flex items-center'>
             <span>⬇</span>
-            Total Donatur<br><strong>${totalReceiver}</strong></div>`
+            Total Penerima<br><strong>${totalReceiver}</strong></div>`
                     totalMakanan.innerHTML = `
         <div class='flex items-center'>
             <span>🍱</span>
-            Total Donatur<br><strong>${totalDonation}</strong></div>`
+            Total Donasi Makanan<br><strong>${totalDonation}</strong></div>`
         donasiHarian.innerHTML = `
              <h3>Donasi Harian</h3>
             <p style="font-size: 24px; font-weight: bold;">${todayDonation} pcs</p>

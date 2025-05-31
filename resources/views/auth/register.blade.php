@@ -55,7 +55,7 @@
   <div class="register-box">
     <h2>Register</h2>
 
-    <form method="POST" id="register-form">
+    <form method="POST" id="register-form" action="javascript:void(0)">
       <input type="text" id="name" name="name" placeholder="Nama Lengkap" required />
       <input type="email" id="email" name="email" placeholder="Email" required />
       <select id="role" name="role" required>
@@ -91,12 +91,11 @@
       console.log({name, email, role, password, password_confirmation})
 
       try {
-        // 1. Kirim register
-      console.log({name, email, role, password, password_confirmation})
         const registerResponse = await fetch("/api/auth/register", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Accept": "application/json"
           },
           body: JSON.stringify({
             name,
@@ -112,11 +111,11 @@
           return;
         }
 
-        // 2. Login otomatis
         const loginResponse = await fetch("/api/auth/login", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Accept": "application/json"
           },
           body: JSON.stringify({
             email,
@@ -129,7 +128,6 @@
         const token = loginJson.data.accessToken;
         localStorage.setItem("accessToken", token);
 
-        // 3. Ambil data user
         const userResponse = await fetch("/api/user", {
           headers: {
             "Authorization": `Bearer ${token}`
