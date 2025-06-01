@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -97,7 +99,8 @@
             margin-top: 1rem;
         }
 
-        th, td {
+        th,
+        td {
             text-align: left;
             padding: 12px;
         }
@@ -129,14 +132,71 @@
             color: white;
         }
 
-        .btn-view { background-color: #3498db; }
-        .btn-edit { background-color: #f1c40f; }
-        .btn-delete { background-color: #e74c3c; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-view {
+            background-color: #3498db;
+        }
+
+        .btn-edit {
+            background-color: #f1c40f;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 6px;
+            height: 6px;
+            background-color: red;
+            border-radius: 50%;
+        }
     </style>
 </head>
+
 <body>
 
     <h1>Dashboard Admin</h1>
+    <div class="header">
+        <div class="page-title">Dashboard Donasi</div>
+        <form method="POST">
+            @csrf
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-700" id="logout-button">Log Out</button>
+        </form>
+    </div>
 
     <div class="stats-container">
         <div class="stat-box"><i>👤</i><span>Total Donatur<br>13</span></div>
@@ -159,7 +219,7 @@
 
     <div class="search-bar">
         <input type="text" placeholder="Search Akun Donatur...">
-    
+
     </div>
 
     <table>
@@ -205,5 +265,25 @@
         </tbody>
     </table>
 
+    <script>
+        const logoutButtonElement = document.getElementById("logout-button");
+        logoutButtonElement.addEventListener("click", async e => {
+            e.preventDefault();
+            try {
+                const response = await fetch("/api/auth/logout", {
+                    method: "POST", headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+                const json = await response.json();
+                localStorage.removeItem("accessToken");
+                window.location.href = "/"
+            } catch (err) {
+                console.log(err);
+            }
+        })
+    </script>
 </body>
+
 </html>
