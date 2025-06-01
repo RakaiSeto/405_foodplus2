@@ -271,7 +271,7 @@
           <div class="stats">
                 <p class="mt-2 text-sm text-gray-200">302,624 Views ·  3000 Likes · 400 comments</p>
           </div>
-          <button type="button" id="request-donasi" class="request-btn" ${donation.quantity == 0 ? "disabled" : ""} style="cursor: ${donation.quantity == 0 ? "not-allowed" : "pointer"}; display: inline-block; margin-top: 10px; background-color: #ffb703; color: #333; padding: 5px 10px; border-radius: 5px; font-weight: bold;" id="request-donasi">
+          <button type="button" id="request-donasi" class="request-btn" ${donation.quantity == 0 ? "disabled" : ""} style="cursor: ${donation.quantity == 0 ? "not-allowed" : "pointer"}; display: inline-block; margin-top: 10px; ${donation.quantity == 0 ? "background-color: #ccc; color: #666;" : "background-color: #ffb703; color: #333;"}; padding: 5px 10px; border-radius: 5px; font-weight: bold;" id="request-donasi">
             Request Donasi
         </button>
         </div>
