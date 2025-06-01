@@ -16,13 +16,15 @@ class DonationController extends Controller implements HasMiddleware
 {
     //
 
-    public static function middleware() {
+    public static function middleware()
+    {
         return [
             new Middleware("auth:sanctum", except: ["index", "show"])
         ];
     }
 
-    public function index() {
+    public function index()
+    {
         $donations = Donation::with("user")->get();
 
         return response()->json([
@@ -32,17 +34,19 @@ class DonationController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function getDonationsByResto(Request $request) {
+    public function getDonationsByResto(Request $request)
+    {
         $donations = Donation::where("user_id", $request->user()->id)->get();
 
         return response()->json([
-        "status" => "Success",
-        "message" => "Donations from this restaurant retrieved",
-        "data" => $donations
-    ]);
+            "status" => "Success",
+            "message" => "Donations from this restaurant retrieved",
+            "data" => $donations
+        ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         // dd($request->all());
 
 
@@ -53,23 +57,33 @@ class DonationController extends Controller implements HasMiddleware
             "category" => "string|required",
             "image" => "image|mimes:jpeg,jpg,png|max:4096|nullable"
         ]);
-        if($request->hasFile("image")) {
+        if ($request->hasFile("image")) {
             $validatedData["image_url"] = $request->file("image")->store("donation-images", "public");
         }
 
-        if(!Gate::allows("insert-donation")) {
-            abort(403, "Dont have access to this resource");
+        if (!Gate::allows("insert-donation")) {
+            return response()->json([
+                "status" => "Error",
+                "message" => "Dont have access to this resource"
+            ], 403);
         };
 
         $donation = Donation::create([
             ...$validatedData,
             "user_id" => $request->user()->id
         ]);
-$subscribers = User::whereHas('subscriptions', function($query) use ($request) {
-    $query->where('donor_id', $request->user()->id);
-})->get();
+
+        $subscribers = User::whereHas('subscriptions', function ($query) use ($request) {
+            $query->where('donor_id', $request->user()->id);
+        })->get();
+
         Notification::send($subscribers, new DonationNotification($donation, $request->user()));
-        return redirect()->route("dashboard.donate");
+
+        return response()->json([
+            "status" => "Success",
+            "message" => "Data inserted",
+            "data" => $donation
+        ]);
 
         // return response()->json([
         //     "status" => "Success",
@@ -78,7 +92,8 @@ $subscribers = User::whereHas('subscriptions', function($query) use ($request) {
         // ]);
     }
 
-    public function show(Request $request, Donation $donation) {
+    public function show(Request $request, Donation $donation)
+    {
         // return view("donate.show", ["donation" => $donation]);
         return response()->json([
             "status" => "Success",
@@ -87,7 +102,8 @@ $subscribers = User::whereHas('subscriptions', function($query) use ($request) {
         ]);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $donation = Donation::findOrFail($id);
 
         // Memeriksa apakah pengguna memiliki akses untuk memperbarui donasi ini
@@ -103,12 +119,11 @@ $subscribers = User::whereHas('subscriptions', function($query) use ($request) {
             "image" => "image|nullable|mimes:jpg,jpeg,png|max:4096"
         ]);
 
-        if($request->hasFile("image")) {
-            if($donation->image_url && Storage::disk("public")->exists($donation->image_url)) {
+        if ($request->hasFile("image")) {
+            if ($donation->image_url && Storage::disk("public")->exists($donation->image_url)) {
                 Storage::disk("public")->delete($donation->image_url);
             }
             $validatedData["image_url"] = $request->file("image")->store("donation-images", "public");
-
         }
 
         $donation->update($validatedData);
@@ -121,11 +136,13 @@ $subscribers = User::whereHas('subscriptions', function($query) use ($request) {
         // ]);
     }
 
-    public function edit(User $user, Donation $donation) {
+    public function edit(User $user, Donation $donation)
+    {
         return view("donate.edit", ["donation" => $donation]);
     }
 
-    public function destroy(Donation $donation) {
+    public function destroy(Donation $donation)
+    {
         $donation->delete();
 
         return redirect()->route("dashboard.donate");

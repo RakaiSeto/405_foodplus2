@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,6 +13,7 @@
     }
   </style>
 </head>
+
 <body class="bg-white font-sans text-gray-800">
   <div class="flex min-h-screen flex-col">
     <!-- Header -->
@@ -30,10 +32,12 @@
       <div class="bg-[#4E9A9A] text-white rounded-xl p-6 mb-6">
         <h1 class="text-3xl font-bold mb-2">Selamat Datang!</h1>
         <p class="text-lg mb-4">
-          Terima kasih telah melihat platform Food+. Anda dapat mendonasikan makanan untuk membantu mereka yang membutuhkan loh. yukk ikut serta!
+          Terima kasih telah melihat platform Food+. Anda dapat mendonasikan makanan untuk membantu mereka yang
+          membutuhkan loh. yukk ikut serta!
         </p>
-        <a href="{{ route('login') }}" class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded">
-        Donasi Sekarang
+        <a href="{{ route('login') }}"
+          class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded">
+          Donasi Sekarang
         </a>
       </div>
 
@@ -42,7 +46,7 @@
 
       <!-- Stat Boxes -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <div class="bg-[#4E9A9A] p-4 rounded flex items-center space-x-4 text-white">
+        <div class="bg-[#4E9A9A] p-4 rounded flex items-center space-x-4 text-white">
           <img src="https://img.icons8.com/ios-filled/50/ffffff/restaurant.png" class="w-8 h-8" />
           <div>
             <p class="font-bold text-sm">Total Restoran</p>
@@ -58,7 +62,7 @@
         </div>
       </div>
 
- <!-- Grid Restoran -->
+      <!-- Grid Restoran -->
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="donation-container">
       </div>
@@ -67,30 +71,30 @@
 
   <script>
     const donationContainer = document.getElementById("donation-container");
-    const donations =fetch("http://localhost:8000/api/donations", {method: "GET"}).then(value => value.json()).then(({data}) => {
-        console.log({data});
-        donationContainer.innerHTML = "";
-        if(!data.length){
-            donationContainer.innerHTML = `
+    const donations = fetch("http://localhost:8000/api/donations", { method: "GET" }).then(value => value.json()).then(({ data }) => {
+      console.log({ data });
+      donationContainer.innerHTML = "";
+      if (!data.length) {
+        donationContainer.innerHTML = `
                 <h1>Data belum ada</h1>
             `
-            return;
-        }
+        return;
+      }
 
-        const totalMakanan = document.getElementById("total-makanan");
-        const totalRestoran= document.getElementById("total-restoran");
-            fetch("/api/statistics/receiver/dashboard/summary", {method: "GET"}).then(response => response.json()).then(({data}) => {
+      const totalMakanan = document.getElementById("total-makanan");
+      const totalRestoran = document.getElementById("total-restoran");
+      fetch("/api/statistics/receiver/dashboard/summary", { method: "GET" }).then(response => response.json()).then(({ data }) => {
         const totalResto = data.total_resto;
         const totalDonation = data.total_donation;
         totalMakanan.textContent = totalDonation;
         totalRestoran.textContent = totalResto;
-    })
+      })
 
 
-        data.forEach(resto => {
-            console.log({resto});
-            const imageUrl = `http://localhost:8000/storage/${resto.image_url}`;
-            const item = `
+      data.forEach(resto => {
+        console.log({ resto });
+        const imageUrl = `http://localhost:8000/storage/${resto.image_url}`;
+        const item = `
             <div class="bg-[#4E9A9A] p-4 rounded text-white flex items-start space-x-4">
               <img src="${imageUrl}"  class="w-12 h-12 rounded" />
               <div>
@@ -103,9 +107,10 @@
               </div>
             </div>
             `
-            donationContainer.innerHTML += item;
-        })
+        donationContainer.innerHTML += item;
+      })
     })
   </script>
 </body>
+
 </html>

@@ -67,7 +67,7 @@
       border-radius: 10px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
     }
     .summary .card i {
@@ -231,19 +231,19 @@
         const todayDonation = data.today_donation;
         const totalReceiver = data.total_receiver;
         totalDonatur.innerHTML = `
-        <div class='flex items-center'>
+        <div class='flex'>
             <span>👤</span>
             Total Donatur<br><strong>${totalResto}</strong></div>`
                     totalRestoran.innerHTML = `
-        <div class='flex items-center'>
+        <div class='flex'>
             <span>🍽</span>
             Total Restoran<br><strong>${totalResto}</strong></div>`
                     totalPenerima.innerHTML = `
-        <div class='flex items-center'>
+        <div class='flex'>
             <span>⬇</span>
             Total Penerima<br><strong>${totalReceiver}</strong></div>`
                     totalMakanan.innerHTML = `
-        <div class='flex items-center'>
+        <div class='flex'>
             <span>🍱</span>
             Total Donasi Makanan<br><strong>${totalDonation}</strong></div>`
         donasiHarian.innerHTML = `
@@ -264,14 +264,14 @@
         <div class="restoran-card">
         <img src="http://localhost:8000/storage/${donation.image_url}" alt="Logo">
         <div class="restoran-info">
-          <h4>${donation.food_name} - ${donation.user.name}</h4>
+          <h4>${donation.food_name} - ${donation.user.name} (${donation.quantity} pcs)</h4>
           <div class="tags">
           ${donation.category}
           </div>
           <div class="stats">
                 <p class="mt-2 text-sm text-gray-200">302,624 Views ·  3000 Likes · 400 comments</p>
           </div>
-          <button type="button" id="request-donasi" class="request-btn " style="cursor: pointer; display: inline-block; margin-top: 10px; background-color: #ffb703; color: #333; padding: 5px 10px; border-radius: 5px; font-weight: bold;" id="request-donasi">
+          <button type="button" id="request-donasi" class="request-btn" ${donation.quantity == 0 ? "disabled" : ""} style="cursor: ${donation.quantity == 0 ? "not-allowed" : "pointer"}; display: inline-block; margin-top: 10px; background-color: #ffb703; color: #333; padding: 5px 10px; border-radius: 5px; font-weight: bold;" id="request-donasi">
             Request Donasi
         </button>
         </div>

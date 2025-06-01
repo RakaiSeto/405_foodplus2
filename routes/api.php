@@ -16,7 +16,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::apiResource("donations", DonationController::class);
-Route::apiResource("donations.requests", DonationRequestController::class);
+Route::post("donations/{donation}/requests", [DonationRequestController::class, "store"]);
 Route::apiResource("subscriptions", SubscriptionController::class);
 Route::apiResource("notifications", NotificationController::class);
 Route::apiResource("donations.comments", CommentController::class);

@@ -22,7 +22,7 @@
         }
 
         .container {
-            width: 100%;
+            min-width: 100%;
             min-height: 100vh;
             display: flex;
         }
@@ -164,7 +164,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container p-0">
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">FOOD+</div>
