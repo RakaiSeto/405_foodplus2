@@ -15,9 +15,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource("donations", DonationController::class);
+Route::get("donations/{resto}", [DonationController::class, "getDonation"]);
+Route::get("donations", [DonationController::class, "index"]);
 Route::post("donations/{donation}/requests", [DonationRequestController::class, "store"]);
-Route::apiResource("subscriptions", SubscriptionController::class);
+Route::get("donations/{donation}/subscribe", [DonationRequestController::class, "subscribe"]);
+Route::get("subscriptions/{donation}", [SubscriptionController::class, "index"]);
 Route::apiResource("notifications", NotificationController::class);
 Route::apiResource("donations.comments", CommentController::class);
 Route::get("donations/{donation}/likes", [LikeController::class, "index"]);

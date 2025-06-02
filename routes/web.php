@@ -7,6 +7,7 @@ use App\Models\Donation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\DonationRequestController;
 
 // Redirect halaman awal ke dashboard guest
 Route::get('/', function () {
@@ -164,6 +165,8 @@ Route::get('/guest/manajemendonasi', function () {
 Route::get('/receiver/request/{restoId}', function () {
     return view("request donasi.request");
 })->name('receiver.request');
+
+
 
 
 // API routes

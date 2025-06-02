@@ -17,6 +17,22 @@ class SubscriptionController extends Controller implements HasMiddleware
             new Middleware("auth:sanctum")
         ];
     }
+
+    public function index(Request $request)
+    {
+        $subscriptions = Subscription::where("receiver_id", $request->user()->id)->where("donor_id", $request->donation)->count();
+        if ($subscriptions == 0) {
+            $status = false;
+        } else {
+            $status = true;
+        }
+        return response()->json([
+            "status" => "Success",
+            "message" => "subscriptions retrieved",
+            "data" => $status
+        ]);
+    }
+
     public function store(Request $request)
     {
         //

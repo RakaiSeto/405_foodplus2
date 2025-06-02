@@ -9,7 +9,6 @@
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-
         body {
             padding: 20px;
             background: #f5f5f5;
@@ -112,19 +111,45 @@
             <div class="notification">🔔</div>
             <form method="POST" action="/logout">
                 @csrf
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-700" id="logout-button">Log Out</button>
+                <button type="submit"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-700"
+                    id="logout-button">Log Out</button>
             </form>
         </div>
     </div>
 
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-700 mb-4 hidden"
+        id="subscribe-button" onclick="subscribe(event)">Subscribe</button>
     <div class="food-grid" id="foodContainer">
-        <!-- Food cards will be generated here -->
     </div>
 
     @push('scripts')
         <script>
+            let restoId = window.location.pathname.split("/")[3];
 
             let foodItems = [];
+
+            fetch(`http://localhost:8000/api/subscriptions/${restoId}`, {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                }
+            }).then(response => response.json()).then(val => {
+                if (val.data == true) {
+                    document.getElementById("subscribe-button").innerHTML = "Unsubscribe";
+                    document.getElementById("subscribe-button").classList.add("bg-red-500");
+                    document.getElementById("subscribe-button").classList.add("hover:bg-red-700");
+                    document.getElementById("subscribe-button").classList.remove("bg-blue-500");
+                    document.getElementById("subscribe-button").classList.remove("hover:bg-blue-700");
+                } else {
+                    document.getElementById("subscribe-button").innerHTML = "Subscribe";
+                    document.getElementById("subscribe-button").classList.remove("bg-red-500");
+                    document.getElementById("subscribe-button").classList.remove("hover:bg-red-700");
+                    document.getElementById("subscribe-button").classList.add("bg-blue-500");
+                    document.getElementById("subscribe-button").classList.add("hover:bg-blue-700");
+                }
+                document.getElementById("subscribe-button").classList.remove("hidden");
+            })
 
             // function initializePage() {
             //     const container = document.getElementById('foodContainer');
@@ -139,18 +164,18 @@
 
             function createFoodCard(food) {
                 return `
-                    <div class="food-card">
-                        <img src="${food.image_url}" alt="${food.name}" class="food-image">
-                        <h3 class="food-name">${food.name}</h3>
-                        <p class="available-text">Jumlah yang tersedia: ${food.available}</p>
-                        <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${food.name}">
-                        <p class="items-text">X1 items</p>
-                        <div class="action-buttons">
-                            <button class="btn btn-cancel" onclick="cancelRequest('${food.name}')">×</button>
-                            <button class="btn btn-confirm" onclick="confirmRequest('${food.name}')">✓</button>
-                        </div>
-                    </div>
-                `;
+                                    <div class="food-card">
+                                        <img src="${food.image_url}" alt="${food.name}" class="food-image">
+                                        <h3 class="food-name">${food.name}</h3>
+                                        <p class="available-text">Jumlah yang tersedia: ${food.available}</p>
+                                        <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${food.name}">
+                                        <p class="items-text">X1 items</p>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-cancel" onclick="cancelRequest('${food.name}')">×</button>
+                                            <button class="btn btn-confirm" onclick="confirmRequest('${food.name}')">✓</button>
+                                        </div>
+                                    </div>
+                                `;
             }
 
             function cancelRequest(foodName) {
@@ -159,6 +184,22 @@
             }
 
             let fetchedDonation = null;
+
+
+            async function subscribe() {
+                console.log("subscribe ke resto", restoId)
+                await fetch(`http://localhost:8000/api/donations/${restoId}/subscribe`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    }
+                }).then(response => response.json()).then(val => {
+                    alert(val.status)
+                })
+                    .catch(err => console.log({ err }))
+
+                window.location.reload();
+            }
 
             function confirmRequest(donation) {
                 console.log({ fetchedDonation })
@@ -199,29 +240,30 @@
             const foodContainer = document.getElementById("foodContainer");
 
             fetch(`http://localhost:8000/api/donations/${+segments[3]}`).then(response => response.json()).then(({ data: donation }) => {
-                fetchedDonation = donation
-                const jsonDonation = JSON.stringify(donation)
-                foodContainer.innerHTML += `
-                 <div class="food-card">
-                        <img src="/storage/${donation.image_url}" alt="${donation.food_name}" class="food-image">
-                        <h3 class="food-name">${donation.food_name}</h3>
-                        <p class="available-text">Jumlah yang tersedia: ${donation.quantity}</p>
-                        <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${donation.food_name}">
-                        <p class="items-text" id="item-text">X1 items</p>
-                        <div class="action-buttons">
-                            <button class="btn btn-cancel" onclick="cancelRequest(${donation.id})">×</button>
-                            <button class="btn btn-confirm" onclick="confirmRequest(${donation.id})">✓</button>
-                        </div>
-                    </div>
-                `
-                const quantityButton = document.getElementById(`quantity-${donation.food_name}`);
-                const itemText = document.getElementById("item-text");
-                quantityButton.addEventListener("input", (event) => {
-                    const value = event.target.value;
-                    itemText.textContent = `X${value} items`;
-                })
+                donation.forEach(element => {
+                    console.log({ element })
+                    foodContainer.innerHTML += `
+                                 <div class="food-card">
+                                        <img src="/storage/${element.image_url}" alt="${element.food_name}" class="food-image">
+                                        <h3 class="food-name">${element.food_name}</h3>
+                                        <p class="available-text">Jumlah yang tersedia: ${element.quantity}</p>
+                                        <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${element.food_name}">
+                                        <p class="items-text" id="item-text">X1 items</p>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-cancel" onclick="cancelRequest(${donation.id})">×</button>
+                                            <button class="btn btn-confirm" onclick="confirmRequest(${donation.id})">✓</button>
+                                        </div>
+                                    </div>
+                                `
+                    const quantityButton = document.getElementById(`quantity-${element.food_name}`);
+                    const itemText = document.getElementById("item-text");
+                    quantityButton.addEventListener("input", (event) => {
+                        const value = event.target.value;
+                        itemText.textContent = `X${value} items`;
+                    })
+                });
                 console.log({ donation })
-            });
+            })
         </script>
     @endpush
 
