@@ -17,6 +17,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get("donations/{resto}", [DonationController::class, "getDonation"]);
 Route::get("donations", [DonationController::class, "index"]);
+Route::post("donations", [DonationController::class, "store"]);
 Route::post("donations/{donation}/requests", [DonationRequestController::class, "store"]);
 Route::get("donations/{donation}/subscribe", [DonationRequestController::class, "subscribe"]);
 Route::get("subscriptions/{donation}", [SubscriptionController::class, "index"]);
@@ -28,6 +29,7 @@ Route::post("/auth/register", [AuthController::class, "register"]);
 Route::post("/auth/login", [AuthController::class, "login"]);
 Route::post("/auth/logout", [AuthController::class, "logout"])->middleware("auth:sanctum");
 Route::get("/donations/resto/all", [DonationController::class, "getDonationsByResto"]);
+Route::get("/restos/all", [DonationController::class, "getAllResto"]);
 
 
 // Dashboard Statistic

@@ -75,7 +75,7 @@
                     </div>
                     <div class="dropdown">
                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-                            {{ Auth::user()->name }}
+                            {{ json.parse(localStorage.getItem("user")).name }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>

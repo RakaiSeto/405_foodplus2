@@ -50,7 +50,8 @@ class AuthController extends Controller
             "message" => "Login success",
             "data" => [
                 "accessToken" => $token->plainTextToken,
-                "role" => $userExistOnDatabase->role
+                "role" => $userExistOnDatabase->role,
+                "user" => $userExistOnDatabase
             ]]);
 
     }

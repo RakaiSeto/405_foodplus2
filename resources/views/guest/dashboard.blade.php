@@ -71,7 +71,7 @@
 
   <script>
     const donationContainer = document.getElementById("donation-container");
-    const donations = fetch("http://localhost:8000/api/donations", { method: "GET" }).then(value => value.json()).then(({ data }) => {
+    const donations = fetch("http://localhost:8000/api/restos/all", { method: "GET" }).then(value => value.json()).then(({ data }) => {
       console.log({ data });
       donationContainer.innerHTML = "";
       if (!data.length) {
@@ -96,14 +96,17 @@
         const imageUrl = `http://localhost:8000/storage/${resto.image_url}`;
         const item = `
             <div class="bg-[#4E9A9A] p-4 rounded text-white flex items-start space-x-4">
-              <img src="${imageUrl}"  class="w-12 h-12 rounded" />
+
               <div>
-                <h4 class="font-bold text-lg">${resto.food_name} - ${resto.user.name}</h4>
+                <h4 class="font-bold text-lg">${resto.name}</h4>
 
                 <div class="flex flex-wrap gap-2 mt-1 text-xs">
-                    <span class="bg-[#317873] px-2 py-1 rounded">${resto.category}</span>
+                    <span class="bg-[#317873] px-2 py-1 rounded">Makanan</span>
+                    <span class="bg-[#317873] px-2 py-1 rounded">Minuman</span>
                 </div>
-                    <p class="mt-2 text-sm text-gray-200">302,624 Views ·  3000 Likes · 400 comments</p>
+                <div class="stats">
+                <p class="mt-2 text-sm text-gray-200">${resto.likes_count} Likes · ${resto.comments_count} comments</p>
+          </div>
               </div>
             </div>
             `

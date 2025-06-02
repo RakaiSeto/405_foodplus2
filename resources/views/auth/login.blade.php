@@ -99,6 +99,7 @@
                 console.log("Login berhasil:", data);
                 const accessToken = data.data.accessToken;
                 localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("user", JSON.stringify(data.data.user));
 
                 if (data.data.role === "penyedia") {
                     window.location.href = "/donate/dashboard";

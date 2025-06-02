@@ -162,7 +162,7 @@
         <button onclick="toggleDropdown()"
           style="background-color: white; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
           <span style="margin-right: 5px;">🔔</span>
-          <span>{{ Auth::user()->name ?? 'penerima' }} ▼</span>
+          <span id="user-name"> ▼</span>
         </button>
         <div id="userDropdown"
           style="display: none; position: absolute; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10;">
@@ -252,6 +252,8 @@
   </main>
 
   <script>
+    const userName = document.getElementById("user-name");
+    userName.innerHTML = JSON.parse(localStorage.getItem("user")).name;
     const summaryComponent = document.getElementById("summary");
     const donasiHarian = document.getElementById("donasi-harian")
     const totalDonatur = document.getElementById("total-donatur")
@@ -289,27 +291,25 @@
         `
     })
 
-    fetch('/api/donations', {
+    fetch('/api/restos/all', {
       headers: {
         "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
       }
     }).then(response => response.json()).then(({ data }) => {
       restoranCard.innerHTML = ``;
       console.log({ data });
-      let likes = 0;
-      data.map(donation => {
+      data.map(restos => {
         restoranCard.innerHTML += `
         <div class="restoran-card">
-        <img src="http://localhost:8000/storage/${donation.image_url}" alt="Logo">
         <div class="restoran-info">
-          <h4>${donation.food_name} - ${donation.user.name} (${donation.quantity} pcs)</h4>
+          <h4>${restos.name} - ${restos.email}</h4>
           <div class="tags">
-          ${donation.category}
+          ${restos.category}
           </div>
           <div class="stats">
-                <p class="mt-2 text-sm text-gray-200">${donation.likes_count} Likes · ${donation.comments_count} comments</p>
+                <p class="mt-2 text-sm text-gray-200">${restos.likes_count} Likes · ${restos.comments_count} comments</p>
           </div>
-          <button type="button" id="request-donasi" class="request-btn" ${donation.quantity == 0 ? "disabled" : ""} style="cursor: ${donation.quantity == 0 ? "not-allowed" : "pointer"}; display: inline-block; margin-top: 10px; ${donation.quantity == 0 ? "background-color: #ccc; color: #666;" : "background-color: #ffb703; color: #333;"}; padding: 5px 10px; border-radius: 5px; font-weight: bold;" onclick="requestDonation(${donation.id})">
+          <button type="button" id="request-donasi" class="request-btn" style="cursor: pointer; display: inline-block; margin-top: 10px; background-color: #ffb703; color: #333; padding: 5px 10px; border-radius: 5px; font-weight: bold;" onclick="requestDonation(${restos.id})">
             Request Donasi
         </button>
         </div>

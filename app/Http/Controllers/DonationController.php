@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Donation;
+use App\Models\Notification as ModelsNotification;
 use App\Models\User;
 use App\Notifications\DonationNotification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -19,8 +21,16 @@ class DonationController extends Controller implements HasMiddleware
     public static function middleware()
     {
         return [
-            new Middleware("auth:sanctum", except: ["index", "show", "getDonation"])
+            new Middleware("auth:sanctum", except: ["index", "show", "getDonation", "dashboard", "getAllResto"])
         ];
+    }
+
+    public function dashboard(Request $request)
+    {
+        dd(Auth::user());
+        $donations = Donation::where("user_id", $request->user()->id)->with("user")->withCount("likes")->withCount("comments")->get();
+
+        return view("donate.dashboard", ["donations" => $donations]);
     }
 
     public function index(Request $request)
@@ -46,9 +56,19 @@ class DonationController extends Controller implements HasMiddleware
         ]);
     }
 
+    public function getAllResto(Request $request)
+    {
+        $restos = User::where("role", "penyedia")->withCount("likes")->withCount("comments")->get();
+        return response()->json([
+            "status" => "Success",
+            "message" => "Restos retrieved",
+            "data" => $restos
+        ]);
+    }
+
     public function getDonationsByResto(Request $request)
     {
-        $donations = Donation::where("user_id", $request->donation)->with("user")->withCount("likes")->withCount("comments")->get();
+        $donations = Donation::where("user_id", $request->user()->id)->with("user")->withCount("likes")->withCount("comments")->get();
 
         return response()->json([
             "status" => "Success",
@@ -59,9 +79,6 @@ class DonationController extends Controller implements HasMiddleware
 
     public function store(Request $request)
     {
-        // dd($request->all());
-
-
         $validatedData = $request->validate([
             "food_name" => "string|required",
             "quantity" => "integer|required",
@@ -89,7 +106,7 @@ class DonationController extends Controller implements HasMiddleware
             $query->where('donor_id', $request->user()->id);
         })->get();
 
-        Notification::send($subscribers, new DonationNotification($donation, $request->user()));
+        // $this->sendNotification($subscribers);
 
         return response()->json([
             "status" => "Success",
@@ -164,4 +181,17 @@ class DonationController extends Controller implements HasMiddleware
         //     "data" => $donation
         // ]);
     }
+
+    // public function sendNotification($subscribers)
+    // {
+    //     foreach ($subscribers as $subscriber) {
+    //         ModelsNotification::create([
+    //             "type" => "donation",
+    //             "notifiable_id" => $subscriber->id,
+    //             "data" => [
+    //                 "donation" => $donation,
+    //             ]
+    //         ]);
+    //     }
+    // }
 }
