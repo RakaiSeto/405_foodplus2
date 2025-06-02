@@ -20,10 +20,11 @@ class LikeController extends Controller implements HasMiddleware
 
     public function index(Donation $donation)
     {
+        $likes = Like::where("donation_id", $donation->id);
         return response()->json([
             "status" => "Success",
             "message" => "Donation liked retrieved",
-            "data"
+            "data" => $likes
         ]);
     }
 

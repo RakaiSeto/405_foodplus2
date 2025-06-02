@@ -258,8 +258,8 @@
     }}).then(response => response.json()).then(({data}) => {
         restoranCard.innerHTML = ``;
         console.log({data});
+        let likes = 0;
         data.map(donation => {
-            console.log({donation})
             restoranCard.innerHTML += `
         <div class="restoran-card">
         <img src="http://localhost:8000/storage/${donation.image_url}" alt="Logo">
@@ -269,7 +269,7 @@
           ${donation.category}
           </div>
           <div class="stats">
-                <p class="mt-2 text-sm text-gray-200">302,624 Views ·  3000 Likes · 400 comments</p>
+                <p class="mt-2 text-sm text-gray-200">${donation.likes_count} Likes · ${donation.comments_count} comments</p>
           </div>
           <button type="button" id="request-donasi" class="request-btn" ${donation.quantity == 0 ? "disabled" : ""} style="cursor: ${donation.quantity == 0 ? "not-allowed" : "pointer"}; display: inline-block; margin-top: 10px; ${donation.quantity == 0 ? "background-color: #ccc; color: #666;" : "background-color: #ffb703; color: #333;"}; padding: 5px 10px; border-radius: 5px; font-weight: bold;" id="request-donasi">
             Request Donasi

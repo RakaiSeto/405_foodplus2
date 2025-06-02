@@ -20,7 +20,7 @@ Route::post("donations/{donation}/requests", [DonationRequestController::class, 
 Route::apiResource("subscriptions", SubscriptionController::class);
 Route::apiResource("notifications", NotificationController::class);
 Route::apiResource("donations.comments", CommentController::class);
-Route::apiResource("donations.likes", LikeController::class);
+Route::get("donations/{donation}/likes", [LikeController::class, "index"]);
 
 Route::post("/auth/register", [AuthController::class, "register"]);
 Route::post("/auth/login", [AuthController::class, "login"]);
