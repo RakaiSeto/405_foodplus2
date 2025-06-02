@@ -45,6 +45,8 @@ class AuthController extends Controller
 
         $token = $userExistOnDatabase->createToken("access-token");
 
+        setcookie('user_id', $userExistOnDatabase->id, time() + 60 * 60 * 24 * 30, '/');
+
         return response()->json([
             "status" => "success",
             "message" => "Login success",

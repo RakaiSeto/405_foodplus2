@@ -13,6 +13,8 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Like;
+use App\Models\Comment;
 
 class DonationController extends Controller implements HasMiddleware
 {
@@ -59,6 +61,18 @@ class DonationController extends Controller implements HasMiddleware
     public function getAllResto(Request $request)
     {
         $restos = User::where("role", "penyedia")->withCount("likes")->withCount("comments")->get();
+        $restos->map(function ($resto) {
+            $likeCount = Like::whereHas('donation', function ($query) use ($resto) {
+                $query->where('user_id', $resto->id);
+            })->count();
+            $commentCount = Comment::whereHas('transaction', function ($query) use ($resto) {
+                $query->leftJoin('donations', 'transactions.donation_id', '=', 'donations.id');
+                $query->where('donations.user_id', $resto->id);
+            })->count();
+            $resto->likes_count = $likeCount;
+            $resto->comments_count = $commentCount;
+            return $resto;
+        });
         return response()->json([
             "status" => "Success",
             "message" => "Restos retrieved",

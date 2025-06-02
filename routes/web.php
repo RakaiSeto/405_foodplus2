@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DonationRequestController;
+use App\Http\Controllers\CommentController;
 
 // Redirect halaman awal ke dashboard guest
 Route::get('/', function () {
@@ -153,6 +154,9 @@ Route::get('/guest/manajemendonasi', function () {
     $donations = \App\Models\Donation::all();
     return view('guest.manajemendonasi', ['donations' => $donations]);
 })->name('guest.manajemendonasi');
+
+Route::get('/resto/comment/{id}', [CommentController::class, 'index'])->name('donate.comment');
+Route::post('/resto/{id}/comment/store', [CommentController::class, 'store'])->name('donate.comment.store');
 
 // Routes untuk penerima donasi
 // Route::middleware(['auth:sanctum', 'role:penerima'])->group(function () {

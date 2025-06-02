@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Penerima - FOOD+</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * {
       margin: 0;
@@ -302,13 +303,16 @@
         restoranCard.innerHTML += `
         <div class="restoran-card">
         <div class="restoran-info">
-          <h4>${restos.name} - ${restos.email}</h4>
-          <div class="tags">
-          ${restos.category}
-          </div>
+          <h4>${restos.name}</h4>
+          <div class="flex flex-wrap gap-2 mt-1 text-xs">
+                    <span class="bg-[#317873] px-2 py-1 rounded">Makanan</span>
+                    <span class="bg-[#317873] px-2 py-1 rounded">Minuman</span>
+                </div>
+          <a style="text-decoration: none;" href="/resto/comment/${restos.id}">
           <div class="stats">
                 <p class="mt-2 text-sm text-gray-200">${restos.likes_count} Likes · ${restos.comments_count} comments</p>
           </div>
+          </a>
           <button type="button" id="request-donasi" class="request-btn" style="cursor: pointer; display: inline-block; margin-top: 10px; background-color: #ffb703; color: #333; padding: 5px 10px; border-radius: 5px; font-weight: bold;" onclick="requestDonation(${restos.id})">
             Request Donasi
         </button>
