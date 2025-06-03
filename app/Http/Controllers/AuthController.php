@@ -74,6 +74,8 @@ class AuthController extends Controller
             $request->user()->tokens()->delete();
         }
 
+        setcookie('user_id', '', time() - 3600, '/');
+
         return response()->json([
             "status" => "success",
             "message" => "Logout successfully"

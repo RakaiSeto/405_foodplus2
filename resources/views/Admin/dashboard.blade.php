@@ -188,14 +188,37 @@
 </head>
 
 <body>
+    <div class="flex justify-between">
+        <h1>Dashboard Admin</h1>
+        <div class="header">
+            <div class="relative">
+                <!-- Notification dot -->
+                {{-- <div class="absolute -top-1 -left-1 w-3 h-3 bg-red-500 rounded-full z-10"></div> --}}
 
-    <h1>Dashboard Admin</h1>
-    <div class="header">
-        <div class="page-title">Dashboard Donasi</div>
-        <form method="POST">
-            @csrf
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-700" id="logout-button">Log Out</button>
-        </form>
+                <!-- Profile dropdown button -->
+                <div class="relative">
+                    <button id="profileButton"
+                        class="flex items-center space-x-2 bg-white border border-gray-300 rounded px-3 py-2 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <span id="profile-name"></span>
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown menu -->
+                    <div id="dropdownMenu"
+                        class="absolute right-0 mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-20 hidden">
+                        <div class="py-1">
+                            <a href="/profile"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                            <a href="#" id="logout-button"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="stats-container">
@@ -266,6 +289,10 @@
     </table>
 
     <script>
+
+        const user = JSON.parse(localStorage.getItem('user'));
+        document.getElementById('profile-name').textContent = user.name;
+
         const logoutButtonElement = document.getElementById("logout-button");
         logoutButtonElement.addEventListener("click", async e => {
             e.preventDefault();
@@ -283,6 +310,21 @@
                 console.log(err);
             }
         })
+
+        const profileButton = document.getElementById('profileButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        profileButton.addEventListener('click', function () {
+            dropdownMenu.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!profileButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+
     </script>
 </body>
 

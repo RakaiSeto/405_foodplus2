@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DonationRequestController;
 use App\Http\Controllers\CommentController;
-
+use App\Http\Controllers\ProfileController;
 // Redirect halaman awal ke dashboard guest
 Route::get('/', function () {
     return redirect('/guest/dashboard');
@@ -141,6 +141,8 @@ Route::post('/register', function (Request $request) {
         // Instead of calling controller method, handle logout directly
         Auth::guard('web')->logout();
 
+        setcookie('user_id', '', -1, '/');
+
         // Invalidate session and regenerate CSRF token
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -163,15 +165,15 @@ Route::post('/resto/{id}/comment/store', [CommentController::class, 'store'])->n
 //     Route::get('/receiver/dashboard', [App\Http\Controllers\DonationRequestController::class, 'dashboard'])->name('receiver.dashboard');
 //     Route::get('/receiver/request/{restoId}', [App\Http\Controllers\DonationRequestController::class, 'showRequestForm'])->name('receiver.request');
 //     Route::get('/receiver/requests', [App\Http\Controllers\DonationRequestController::class, 'myRequests'])->name('receiver.requests');
-//     Route::get('/receiver/history', [App\Http\Controllers\DonationRequestController::class, 'history'])->name('receiver.history');
+    Route::get('/receiver/history', [App\Http\Controllers\DonationRequestController::class, 'history'])->name('receiver.history');
 //     Route::post('/receiver/request', [App\Http\Controllers\DonationRequestController::class, 'store'])->name('donation.request');
 // });
 Route::get('/receiver/request/{restoId}', function () {
     return view("request donasi.request");
 })->name('receiver.request');
 
-
-
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
 // API routes
 Route::prefix('api')->group(function () {

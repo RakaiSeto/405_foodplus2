@@ -8,13 +8,14 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Transaction;
 
 class DonationRequestController extends Controller implements HasMiddleware
 {
 
     public static function middleware() {
         return [
-            new Middleware("auth:sanctum", except: ["show"])
+            new Middleware("auth:sanctum", except: ["show", "history"])
         ];
     }
 
@@ -61,5 +62,11 @@ class DonationRequestController extends Controller implements HasMiddleware
             "status" => "Success",
             "message" => "subscribe created",
         ]);
+    }
+
+    public function history(Request $request)
+    {
+        $transactions = Transaction::where('receiver_id', $request->user()->id)->get();
+        return view("receive.history", compact("transactions"));
     }
 }

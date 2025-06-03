@@ -190,7 +190,7 @@
                             <li>
                                 <form method="POST">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">Profile</button>
+                                    <a class="dropdown-item" href="/profile">Profile</a>
                                     <button type="submit" class="dropdown-item" id="logout-button">Log Out</button>
                                 </form>
                             </li>
