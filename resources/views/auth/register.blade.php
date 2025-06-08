@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register - FOOD+</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@800&family=Poppins:wght@400;600&display=swap"
+    rel="stylesheet">
   <style>
     body {
       margin: 0;
@@ -15,6 +17,7 @@
       align-items: center;
       height: 100vh;
     }
+
     .register-box {
       background-color: white;
       padding: 30px;
@@ -22,10 +25,13 @@
       width: 90%;
       max-width: 600px;
     }
+
     h2 {
       text-align: center;
     }
-    input, select {
+
+    input,
+    select {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -33,6 +39,7 @@
       border-radius: 5px;
       background-color: #eee;
     }
+
     .btn-yellow {
       background-color: #ffee00;
       color: black;
@@ -43,6 +50,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
     .error {
       color: red;
       font-size: 14px;
@@ -51,6 +59,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="register-box">
     <h2>Register</h2>
@@ -65,7 +74,8 @@
         <option value="admin">Admin</option>
       </select>
       <input type="password" id="password" name="password" placeholder="Password" required />
-      <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi Password" required />
+      <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Konfirmasi Password"
+        required />
       <button type="submit" class="btn-yellow">Register</button>
     </form>
 
@@ -88,7 +98,7 @@
       const password = passwordInput.value;
       const password_confirmation = confirmPasswordInput.value;
 
-      console.log({name, email, role, password, password_confirmation})
+      console.log({ name, email, role, password, password_confirmation })
 
       try {
         const registerResponse = await fetch("/api/auth/register", {
@@ -127,6 +137,7 @@
 
         const token = loginJson.data.accessToken;
         localStorage.setItem("accessToken", token);
+        localStorage.setItem("user", JSON.stringify(loginJson.data.user));
 
         const userResponse = await fetch("/api/user", {
           headers: {
@@ -151,4 +162,5 @@
     });
   </script>
 </body>
+
 </html>
