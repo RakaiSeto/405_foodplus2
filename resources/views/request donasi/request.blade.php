@@ -164,18 +164,18 @@
 
             function createFoodCard(food) {
                 return `
-                                    <div class="food-card">
-                                        <img src="${food.image_url}" alt="${food.name}" class="food-image">
-                                        <h3 class="food-name">${food.name}</h3>
-                                        <p class="available-text">Jumlah yang tersedia: ${food.available}</p>
-                                        <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${food.name}">
-                                        <p class="items-text">X1 items</p>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-cancel" onclick="cancelRequest('${food.name}')">×</button>
-                                            <button class="btn btn-confirm" onclick="confirmRequest('${food.name}')">✓</button>
+                                        <div class="food-card">
+                                            <img src="${food.image_url}" alt="${food.name}" class="food-image">
+                                            <h3 class="food-name">${food.name}</h3>
+                                            <p class="available-text">Jumlah yang tersedia: ${food.available}</p>
+                                            <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${food.name}">
+                                            <p class="items-text">X1 items</p>
+                                            <div class="action-buttons">
+                                                <a class="btn btn-cancel" href="/receive/dashboard">×</a>
+                                                <button class="btn btn-confirm" onclick="confirmRequest('${food.name}')">✓</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                `;
+                                    `;
             }
 
             function cancelRequest(foodName) {
@@ -201,9 +201,8 @@
                 window.location.reload();
             }
 
-            function confirmRequest(donation) {
-                console.log({ fetchedDonation })
-                const input = document.getElementById(`quantity-${fetchedDonation.food_name}`);
+            function confirmRequest(donationId) {
+                const input = document.getElementById(`quantity-${donationId}`);
                 const quantity = parseInt(input.value);
                 console.log({ quantity });
 
@@ -212,12 +211,12 @@
                     return;
                 }
 
-                if (quantity > fetchedDonation.quantity) {
-                    alert(`Jumlah melebihi stok yang tersedia (${fetchedDonation.quantity})`);
+                if (quantity > document.getElementById(`available-${donationId}`).value) {
+                    alert(`Jumlah melebihi stok yang tersedia (${document.getElementById(`available-${donationId}`).value})`);
                     return;
                 }
 
-                fetch(`http://localhost:8000/api/donations/${fetchedDonation.id}/requests`, {
+                fetch(`http://localhost:8000/api/donations/${donationId}/requests`, {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -225,12 +224,12 @@
                     },
                     body: JSON.stringify({
                         quantity: input.value,
-                        donation_id: fetchedDonation.id,
-                        donor_id: fetchedDonation.user_id
+                        donation_id: donationId,
+                        donor_id: document.getElementById(`donor-id-${donationId}`).value
                     })
                 }).then(response => response.json()).then(val => {
                     alert(val.message)
-                    window.location.href = "/receive/dashboard"
+                    window.location.reload();
                 })
                     .catch(err => console.log({ err }))
             }
@@ -243,19 +242,21 @@
                 donation.forEach(element => {
                     console.log({ element })
                     foodContainer.innerHTML += `
-                                 <div class="food-card">
-                                        <img src="/storage/${element.image_url}" alt="${element.food_name}" class="food-image">
-                                        <h3 class="food-name">${element.food_name}</h3>
-                                        <p class="available-text">Jumlah yang tersedia: ${element.quantity}</p>
-                                        <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${element.food_name}">
-                                        <p class="items-text" id="item-text">X1 items</p>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-cancel" onclick="cancelRequest(${donation.id})">×</button>
-                                            <button class="btn btn-confirm" onclick="confirmRequest(${donation.id})">✓</button>
+                                     <div class="food-card">
+                                            <img src="/storage/${element.image_url}" alt="${element.food_name}" class="food-image">
+                                            <h3 class="food-name">${element.food_name}</h3>
+                                            <input type="hidden" id="donor-id-${element.id}" value="${element.user_id}">
+                                            <input type="hidden" id="available-${element.id}" value="${element.quantity}">
+                                            <p class="available-text">Jumlah yang tersedia: ${element.quantity}</p>
+                                            <input type="text" class="input-quantity" placeholder="Masukkan Jumlah Yang Kamu Mau" id="quantity-${element.id}">
+                                            <p class="items-text" id="item-text">X1 items</p>
+                                            <div class="action-buttons">
+                                                <a class="btn btn-cancel" href="/receive/dashboard">×</a>
+                                                <button class="btn btn-confirm" onclick="confirmRequest(${element.id})">✓</button>
+                                            </div>
                                         </div>
-                                    </div>
-                                `
-                    const quantityButton = document.getElementById(`quantity-${element.food_name}`);
+                                    `
+                    const quantityButton = document.getElementById(`quantity-${element.id}`);
                     const itemText = document.getElementById("item-text");
                     quantityButton.addEventListener("input", (event) => {
                         const value = event.target.value;

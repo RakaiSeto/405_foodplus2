@@ -9,6 +9,7 @@ use Illuminate\Routing\Controllers\Middleware;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Transaction;
+use App\Models\Notification;
 
 class DonationRequestController extends Controller implements HasMiddleware
 {
@@ -38,6 +39,13 @@ class DonationRequestController extends Controller implements HasMiddleware
         ]);
         $donation->quantity -= $validatedData["quantity"];
         $donation->save();
+
+        Notification::create([
+            "type" => "Request Donasi Baru",
+            "data" => "Request donasi baru oleh " . $request->user()->name . " untuk " . $donation->name,
+            "notifiable_id" => $donation->user_id,
+            "notifiable_type" => "Donation"
+        ]);
 
         return response()->json([
             "status" => "Success",

@@ -93,12 +93,17 @@ Route::post('/register', function (Request $request) {
 // Route untuk dashboard donatur (yang sudah login)
     // Dashboard donatur
     Route::get('/donate/dashboard', function () {
-        return view('donate.dashboard');
+        $notificationsNotRead = \App\Models\Notification::where('notifiable_id', $_COOKIE['user_id'])->where('read_at', null)->get();
+        $notificationsRead = \App\Models\Notification::where('notifiable_id', $_COOKIE['user_id'])->where('read_at', '!=', null)->get();
+        // dd($notificationsNotRead, $notificationsRead);
+        return view('donate.dashboard', ['notificationsNotRead' => $notificationsNotRead, 'notificationsRead' => $notificationsRead]);
     })->name('dashboard.donate');
 
     // Dashboard penerima
     Route::get('/receive/dashboard', function () {
-        return view('receive.dashboard');
+        $notificationsNotRead = \App\Models\Notification::where('notifiable_id', $_COOKIE['user_id'])->where('read_at', null)->get();
+        $notificationsRead = \App\Models\Notification::where('notifiable_id', $_COOKIE['user_id'])->where('read_at', '!=', null)->get();
+        return view('receive.dashboard', ['notificationsNotRead' => $notificationsNotRead, 'notificationsRead' => $notificationsRead]);
     })->name('dashboard.receive');
 
     // Dashboard user (general)
@@ -108,7 +113,9 @@ Route::post('/register', function (Request $request) {
 
     // Dashboard admin
     Route::get("/admin/dashboard", function () {
-        return view("Admin.dashboard");
+        $notificationsNotRead = \App\Models\Notification::where('notifiable_id', $_COOKIE['user_id'])->where('read_at', null)->get();
+        $notificationsRead = \App\Models\Notification::where('notifiable_id', $_COOKIE['user_id'])->where('read_at', '!=', null)->get();
+        return view("Admin.dashboard", ['notificationsNotRead' => $notificationsNotRead, 'notificationsRead' => $notificationsRead]);
     })->name("dashboard.admin");
 
     // Route untuk donasi

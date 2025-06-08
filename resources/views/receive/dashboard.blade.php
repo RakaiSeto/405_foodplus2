@@ -5,8 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Penerima - FOOD+</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
       margin: 0;
@@ -142,6 +144,17 @@
       font-size: 10px;
     }
 
+
+    .notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 6px;
+      height: 6px;
+      background-color: red;
+      border-radius: 50%;
+    }
+
     .footer-note {
       text-align: right;
       margin-top: 10px;
@@ -159,21 +172,29 @@
   <main>
     <div class="topbar">
       <h2>Dashboard</h2>
-      <div style="position: relative;">
-        <button onclick="toggleDropdown()"
-          style="background-color: white; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-          <span style="margin-right: 5px;">🔔</span>
-          <span id="user-name"> ▼</span>
-        </button>
-        <div id="userDropdown"
-          style="display: none; position: absolute; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10;">
-          <a href="/profile" style="display: block; padding: 10px 20px; text-decoration: none; color: #0f172a;">Profile</a>
-          <form method="POST" style="margin: 0;">
-            @csrf
-            <button type="submit"
-              style="display: block; width: 100%; text-align: left; padding: 10px 20px; background: none; border: none; cursor: pointer; color: #0f172a;"
-              id="logout-button">Log Out</button>
-          </form>
+      <div class="flex items-center gap-4">
+        <div class="relative cursor-pointer" id="notification-button">
+          <i class="fas fa-bell"></i>
+          @if(count($notificationsNotRead) > 0)
+        <div class="notification-badge"></div>
+      @endif
+        </div>
+
+        <div style="position: relative;">
+          <button onclick="toggleDropdown()"
+            style="background-color: white; border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+            <span id="user-name"> ▼</span>
+          </button>
+          <div id="userDropdown"style="display: none; position: absolute; right: 0; background-color: white; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10;">
+            <a href="/profile"
+              style="display: block; padding: 10px 20px; text-decoration: none; color: #0f172a;">Profile</a>
+            <form method="POST" style="margin: 0;">
+              @csrf
+              <button type="submit"
+                style="display: block; width: 100%; text-align: left; padding: 10px 20px; background: none; border: none; cursor: pointer; color: #0f172a;"
+                id="logout-button">Log Out</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -252,6 +273,88 @@
     <p class="footer-note">See Details</p>
   </main>
 
+  <div class="modal" aria-labelledby="dialog-title" role="dialog" id="notificationModal">
+    <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div
+          class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          <div class="bg-white px-4 py-3 sm:p-6">
+
+            <div class="text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <div class="flex justify-between items-center">
+
+                <h3 class="text-base font-semibold text-gray-900" id="dialog-title">Notifikasi</h3>
+                <div class="flex items-center gap-2">
+                  <button type="button"
+                    class="cursor-pointer bg-blue-700 rounded-lg p-2 flex items-center justify-between max-w-md mx-auto text-white text-sm"
+                    id="read-all-notification" data-bs-dismiss="modal" aria-label="Close">Read All</button>
+                  <button type="button" class="cursor-pointer" id="close-notification-modal" data-bs-dismiss="modal"
+                    aria-label="Close">X</button>
+                </div>
+              </div>
+
+
+              <div class="mt-2">
+                {{-- card for every notification --}}
+                @if(isset($notificationsNotRead))
+              <div class="flex flex-col gap-2">
+                @foreach($notificationsNotRead as $notification)
+            <div
+            class="relative bg-gray-300 w-full rounded-lg p-4 flex items-center justify-between max-w-md mx-auto">
+            <!-- Red badge for unread notifications -->
+            <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+
+            <div class="flex items-center space-x-3">
+              <div class="flex flex-col items-start">
+              <h3 class="text-gray-900 font-medium text-sm">
+              {{ $notification->type }}
+              </h3>
+              <p class="text-gray-500 text-xs">
+              {{ $notification->data }}
+              </p>
+              </div>
+            </div>
+            <div class="text-gray-400 text-xs">
+              {{ $notification->created_at->format('d F Y') }}
+            </div>
+            </div>
+            @endforeach
+              </div>
+        @endif
+
+                @if(isset($notificationsRead))
+              <div class="flex flex-col gap-2">
+                @foreach($notificationsRead as $notification)
+            <div class="bg-gray-100 w-full rounded-lg p-4 flex items-center justify-between max-w-md mx-auto">
+            <div class="flex items-center space-x-3">
+              <div class="flex flex-col items-start">
+              <h3 class="text-gray-900 font-medium text-sm">
+              {{ $notification->type }}
+              </h3>
+              <p class="text-gray-500 text-xs">
+              {{ $notification->data }}
+              </p>
+              </div>
+            </div>
+            <div class="text-gray-400 text-xs">
+              {{ $notification->created_at->format('d F Y') }}
+            </div>
+            </div>
+            @endforeach
+              </div>
+        @endif
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
     const userName = document.getElementById("user-name");
     userName.innerHTML = JSON.parse(localStorage.getItem("user")).name;
@@ -263,6 +366,26 @@
     const totalMakanan = document.getElementById("total-makanan")
 
     const restoranCard = document.getElementById("restoran");
+
+    const notificationButton = document.getElementById("notification-button");
+    notificationButton.addEventListener("click", () => {
+      document.getElementById("notificationModal").classList.add("show");
+      document.getElementById("notificationModal").style.display = "block";
+    })
+
+    const readAllNotification = document.getElementById("read-all-notification");
+    readAllNotification.addEventListener("click", () => {
+      fetch("/api/notifications/read-all", { method: "POST" }).then(response => response.json()).then(data => {
+        console.log({ data })
+        window.location.reload();
+      })
+    })
+
+    const closeNotificationModal = document.getElementById("close-notification-modal");
+    closeNotificationModal.addEventListener("click", () => {
+      document.getElementById("notificationModal").classList.remove("show");
+      document.getElementById("notificationModal").style.display = "none";
+    })
 
     fetch("/api/statistics/receiver/dashboard/summary", { method: "GET" }).then(response => response.json()).then(({ data }) => {
       const totalResto = data.total_resto;

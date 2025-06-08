@@ -22,6 +22,7 @@ Route::post("donations/{donation}/requests", [DonationRequestController::class, 
 Route::get("donations/{donation}/subscribe", [DonationRequestController::class, "subscribe"]);
 Route::get("subscriptions/{donation}", [SubscriptionController::class, "index"]);
 Route::apiResource("notifications", NotificationController::class);
+Route::post("notifications/read-all", [NotificationController::class, "readAll"]);
 Route::apiResource("donations.comments", CommentController::class);
 Route::get("donations/{donation}/likes", [LikeController::class, "index"]);
 

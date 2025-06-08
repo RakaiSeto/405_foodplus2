@@ -49,7 +49,21 @@ class DonationController extends Controller implements HasMiddleware
 
     public function getDonation(Request $request)
     {
-        $donations = Donation::where("user_id", $request->resto)->with("user")->withCount("likes")->withCount("comments")->get();
+        $donations = Donation::where("user_id", $request->resto)->with("user")->get();
+        $donations->map(function ($donation) {
+            $commentCount = Comment::whereHas('transaction', function ($query) use ($donation) {
+                $query->leftJoin('donations', 'transactions.donation_id', '=', 'donations.id');
+                $query->where('donations.user_id', $donation->user_id);
+            })->count();
+
+            $likeCount = Like::whereHas('donation', function ($query) use ($donation) {
+                $query->where('user_id', $donation->user_id);
+            })->count();
+
+            $donation->likes_count = $likeCount;
+            $donation->comments_count = $commentCount;
+            return $donation;
+        });
 
         return response()->json([
             "status" => "Success",
@@ -82,7 +96,14 @@ class DonationController extends Controller implements HasMiddleware
 
     public function getDonationsByResto(Request $request)
     {
-        $donations = Donation::where("user_id", $request->user()->id)->with("user")->withCount("likes")->withCount("comments")->get();
+        $donations = Donation::where("user_id", $request->user()->id)->with("user")->withCount("likes")->get();
+        $donations->map(function ($donation) {
+            $donation->comments_count = Comment::whereHas('transaction', function ($query) use ($donation) {
+                $query->leftJoin('donations', 'transactions.donation_id', '=', 'donations.id');
+                $query->where('donations.user_id', $donation->user_id);
+            })->count();
+            return $donation;
+        });
 
         return response()->json([
             "status" => "Success",
@@ -116,11 +137,11 @@ class DonationController extends Controller implements HasMiddleware
             "user_id" => $request->user()->id
         ]);
 
-        $subscribers = User::whereHas('subscriptions', function ($query) use ($request) {
-            $query->where('donor_id', $request->user()->id);
+        $subscribers = User::whereHas('subscriptions', function ($query) {
+            $query->where('donor_id', $_COOKIE['user_id']);
         })->get();
 
-        // $this->sendNotification($subscribers);
+        $this->sendNotification($subscribers, $donation);
 
         return response()->json([
             "status" => "Success",
@@ -196,16 +217,15 @@ class DonationController extends Controller implements HasMiddleware
         // ]);
     }
 
-    // public function sendNotification($subscribers)
-    // {
-    //     foreach ($subscribers as $subscriber) {
-    //         ModelsNotification::create([
-    //             "type" => "donation",
-    //             "notifiable_id" => $subscriber->id,
-    //             "data" => [
-    //                 "donation" => $donation,
-    //             ]
-    //         ]);
-    //     }
-    // }
+    public function sendNotification($subscribers, $donation)
+    {
+        foreach ($subscribers as $subscriber) {
+            ModelsNotification::create([
+                "type" => "Donasi Baru",
+                "data" => 'Donasi ' . $donation->food_name . ' baru dari ' . $donation->user->name,
+                "notifiable_id" => $subscriber->id,
+                "notifiable_type" => "Subscription"
+            ]);
+        }
+    }
 }
